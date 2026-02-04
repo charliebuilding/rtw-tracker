@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run The Wharf 2026 | Ticket Sales Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a24;
+            --bg-hover: #22222e;
+            --border: #2a2a38;
+            --text-primary: #f0f0f5;
+            --text-secondary: #9090a0;
+            --text-muted: #606070;
+            --accent-cyan: #00ffd1;
+            --accent-pink: #ff006b;
+            --accent-yellow: #ffd700;
+            --accent-blue: #4169e1;
+            --accent-green: #00ff88;
+            --accent-orange: #ff8c00;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-left h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-left .subtitle {
+            font-family: 'DM Mono', monospace;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .header-right {
+            text-align: right;
+        }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 100px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--accent-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .live-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        .last-updated {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent-cyan);
+        }
+
+        .stat-card.pink::before { background: var(--accent-pink); }
+        .stat-card.yellow::before { background: var(--accent-yellow); }
+        .stat-card.green::before { background: var(--accent-green); }
+        .stat-card.orange::before { background: var(--accent-orange); }
+
+        .stat-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-card.pink .stat-value { color: var(--accent-pink); }
+        .stat-card.yellow .stat-value { color: var(--accent-yellow); }
+        .stat-card.green .stat-value { color: var(--accent-green); }
+        .stat-card.orange .stat-value { color: var(--accent-orange); }
+
+        .stat-change {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Progress Section */
+        .progress-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .progress-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .progress-pct {
+            font-family: 'DM Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+
+        .progress-bar-container {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            height: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 8px;
+            transition: width 1s ease-out;
+            position: absolute;
+        }
+
+        .progress-bar.actual {
+            background: linear-gradient(90deg, var(--accent-cyan), rgba(0, 255, 209, 0.7));
+            z-index: 2;
+        }
+
+        .progress-bar.target-line {
+            width: 100%;
+            background: transparent;
+            border-right: 3px solid var(--accent-yellow);
+            z-index: 1;
+        }
+
+        .progress-markers {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        /* Chart Section */
+        .chart-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .chart-subtitle {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-container {
+            height: 400px;
+            position: relative;
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .legend-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+        }
+
+        .legend-dot.cyan { background: var(--accent-cyan); }
+        .legend-dot.yellow { background: var(--accent-yellow); }
+        .legend-dot.pink { background: var(--accent-pink); border: 2px dashed var(--accent-pink); background: transparent; }
+
+        /* Run Rate Card */
+        .run-rate-section {
+            background: linear-gradient(135deg, rgba(255, 0, 107, 0.1), rgba(0, 255, 209, 0.1));
+            border: 1px solid var(--accent-pink);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .run-rate-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .run-rate-value {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--accent-pink);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .run-rate-unit {
+            font-family: 'DM Mono', monospace;
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .run-rate-detail {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+        }
+
+        .run-rate-item {
+            text-align: center;
+        }
+
+        .run-rate-item-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .run-rate-item-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* Run Rate Grid (side by side cards) */
+        .run-rate-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Weekly Table */
+        .table-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 0.75rem 1rem;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th.right { text-align: right; }
+
+        td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            font-family: 'DM Mono', monospace;
+        }
+
+        td.right { text-align: right; }
+
+        tr:hover td {
+            background: var(--bg-hover);
+        }
+
+        tr.current-week td {
+            background: rgba(0, 255, 209, 0.1);
+        }
+
+        tr.future td {
+            color: var(--text-muted);
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .status-dot.complete { background: var(--accent-green); }
+        .status-dot.current { background: var(--accent-cyan); animation: pulse 2s infinite; }
+        .status-dot.future { background: var(--text-muted); }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer p {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* iOS Text Rendering Fixes */
+        html {
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+
+        /* Responsive - Tablet */
+        @media (max-width: 1000px) {
+            .stats-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        /* Responsive - Mobile */
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .header { flex-direction: column; gap: 1rem; }
+            .header-right { text-align: left; }
+            .header-left h1 { font-size: 1.75rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .stat-value { font-size: 1.5rem; }
+            .run-rate-detail { flex-direction: column; gap: 1rem; }
+            .run-rate-value { font-size: 3rem; }
+            .chart-container { height: 300px; }
+            .legend { gap: 1rem; }
+            .legend-item { font-size: 0.7rem; }
+            
+            /* Side by side run rate cards stack on mobile */
+            .run-rate-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Responsive - Small Mobile (iPhone SE, etc) */
+        @media (max-width: 480px) {
+            .container { padding: 0.75rem; }
+            
+            .header-left h1 { 
+                font-size: 1.5rem; 
+                line-height: 1.2;
+            }
+            .header-left .subtitle { font-size: 0.75rem; }
+            
+            .stats-grid { 
+                grid-template-columns: 1fr 1fr;
+                gap: 0.5rem;
+            }
+            .stat-card { 
+                padding: 1rem; 
+            }
+            .stat-label { font-size: 0.6rem; }
+            .stat-value { font-size: 1.25rem; }
+            .stat-change { font-size: 0.65rem; }
+            
+            .progress-section { padding: 1rem; }
+            .progress-title { font-size: 1rem; }
+            .progress-pct { font-size: 1.25rem; }
+            .progress-bar-container { height: 24px; }
+            .progress-markers { font-size: 0.6rem; }
+            
+            .chart-section { padding: 1rem; }
+            .chart-title { font-size: 1rem; }
+            .chart-subtitle { font-size: 0.65rem; }
+            .chart-container { height: 250px; }
+            
+            .legend { 
+                gap: 0.75rem; 
+                justify-content: flex-start;
+            }
+            .legend-item { 
+                font-size: 0.65rem; 
+                gap: 0.3rem;
+            }
+            .legend-dot { 
+                width: 10px; 
+                height: 10px; 
+            }
+            
+            .run-rate-section { padding: 1.25rem; }
+            .run-rate-label { font-size: 0.75rem; }
+            .run-rate-value { font-size: 2.5rem; }
+            .run-rate-unit { font-size: 0.8rem; }
+            .run-rate-item-value { font-size: 1.25rem; }
+            .run-rate-item-label { font-size: 0.6rem; }
+            
+            .table-section { padding: 1rem; }
+            table { font-size: 0.75rem; }
+            th { 
+                padding: 0.5rem; 
+                font-size: 0.6rem; 
+            }
+            td { padding: 0.5rem; }
+            
+            .footer p { font-size: 0.65rem; }
+        }
+
+        /* iOS Safari specific fixes */
+        @supports (-webkit-touch-callout: none) {
+            body {
+                /* Prevent font boosting on iOS */
+                -webkit-text-size-adjust: 100%;
+            }
+            
+            /* Fix gradient text on iOS */
+            .header-left h1 {
+                background: linear-gradient(135deg, var(--accent-cyan), var(--accent-pink));
+                -webkit-background-clip: text;
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+                color: transparent;
+            }
+            
+            /* Ensure touch targets are large enough */
+            .live-badge,
+            .stat-card {
+                min-height: 44px;
+            }
+        }
+
+        /* Dark mode preference (matches our dark theme) */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                color-scheme: dark;
+            }
+        }
+
+        /* Reduce motion for accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            .live-badge::before,
+            .status-dot.current {
+                animation: none;
+            }
+            .progress-bar {
+                transition: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1>Run The Wharf 2026</h1>
+                <p class="subtitle">Weekly Ticket Sales Tracker → 4,000 Target</p>
+            </div>
+            <div class="header-right">
+                <div class="live-badge">LIVE TRACKING</div>
+                <p class="last-updated">Last Updated: 4 Feb 2026</p>
+            </div>
+        </header>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Tickets Sold</div>
+                <div class="stat-value" id="totalTickets">709</div>
+                <div class="stat-change">576 startlist + 133 unallocated corp</div>
+            </div>
+            <div class="stat-card" style="border-color: #9966ff;">
+                <div class="stat-label">Corporate Tickets</div>
+                <div class="stat-value" style="color: #9966ff;">152</div>
+                <div class="stat-change">6 companies | £4,790</div>
+            </div>
+            <div class="stat-card yellow">
+                <div class="stat-label">Target</div>
+                <div class="stat-value">4,000</div>
+                <div class="stat-change">Event Day Goal</div>
+            </div>
+            <div class="stat-card pink">
+                <div class="stat-label">Tickets Remaining</div>
+                <div class="stat-value" id="ticketsRemaining">3,291</div>
+                <div class="stat-change">to reach target</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-label">Days Since Launch</div>
+                <div class="stat-value" id="daysSinceLaunch">17</div>
+                <div class="stat-change">WC 18 Jan 2026</div>
+            </div>
+            <div class="stat-card orange">
+                <div class="stat-label">Days to Event</div>
+                <div class="stat-value" id="daysToEvent">212</div>
+                <div class="stat-change">4 Sep 2026</div>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-section">
+            <div class="progress-header">
+                <h2 class="progress-title">Progress to 4,000</h2>
+                <div class="progress-pct" id="progressPct">17.7%</div>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar actual" id="progressBar" style="width: 17.7%"></div>
+            </div>
+            <div class="progress-markers">
+                <span>0</span>
+                <span>1,000</span>
+                <span>2,000</span>
+                <span>3,000</span>
+                <span>4,000</span>
+            </div>
+        </div>
+
+        <!-- Main Chart -->
+        <div class="chart-section">
+            <h3 class="chart-title">Weekly Sales Progress to Event Day</h3>
+            <p class="chart-subtitle">RTW 2026: Launch 18 Jan → Event 4 Sep | RTW 2025: Launch 23 May → Event 4 Sep (final: 2,369)</p>
+            <div class="chart-container">
+                <canvas id="mainChart"></canvas>
+            </div>
+            <div class="legend">
+                <div class="legend-item"><div class="legend-dot cyan"></div> RTW 2026 Actual</div>
+                <div class="legend-item"><div class="legend-dot" style="background: #9966ff;"></div> RTW 2025 Actual</div>
+                <div class="legend-item"><div class="legend-dot yellow"></div> Target Pace (4,000)</div>
+                <div class="legend-item"><div class="legend-dot pink"></div> RTW 2026 Projected</div>
+            </div>
+        </div>
+
+        <!-- Run Rate Cards - Side by Side -->
+        <div class="run-rate-grid">
+            <!-- Ticket Run Rate Card -->
+            <div class="run-rate-section" style="margin-bottom: 0;">
+                <div class="run-rate-label">Required Daily Run Rate</div>
+                <div class="run-rate-value" id="runRate">16.2</div>
+                <div class="run-rate-unit">tickets per day to hit 4,000</div>
+                <div class="run-rate-detail" style="flex-direction: column; gap: 1rem;">
+                    <div class="run-rate-item">
+                        <div class="run-rate-item-value" id="currentPace">29.6</div>
+                        <div class="run-rate-item-label">Current Pace (excl. launch)</div>
+                    </div>
+                    <div class="run-rate-item">
+                        <div class="run-rate-item-value" id="weeklyRequired">113</div>
+                        <div class="run-rate-item-label">Weekly Target</div>
+                    </div>
+                    <div class="run-rate-item">
+                        <div class="run-rate-item-value" id="projectedFinal">2,860</div>
+                        <div class="run-rate-item-label">Projected at Current Pace</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Revenue Run Rate Card -->
+            <div class="run-rate-section" style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(0, 255, 209, 0.1)); border-color: var(--accent-yellow); margin-bottom: 0;">
+                <div class="run-rate-label">Required Daily Revenue</div>
+                <div class="run-rate-value" id="revRunRate" style="color: var(--accent-yellow);">£567</div>
+                <div class="run-rate-unit">per day to hit £114,792 target</div>
+                <div class="run-rate-detail" style="flex-direction: column; gap: 1rem;">
+                    <div class="run-rate-item">
+                        <div class="run-rate-item-value" id="revCurrent">£20,160</div>
+                        <div class="run-rate-item-label">Revenue to Date</div>
+                    </div>
+                    <div class="run-rate-item">
+                        <div class="run-rate-item-value" id="revCurrentPace">£721</div>
+                        <div class="run-rate-item-label">Current Daily Pace</div>
+                    </div>
+                    <div class="run-rate-item">
+                        <div class="run-rate-item-value" id="revProjected">£100,100</div>
+                        <div class="run-rate-item-label">Projected at Current Pace</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Corporate Tickets Section -->
+        <div class="table-section" style="background: linear-gradient(135deg, rgba(153, 102, 255, 0.1), rgba(153, 102, 255, 0.05)); border-color: rgba(153, 102, 255, 0.3);">
+            <h3 class="chart-title" style="margin-bottom: 1rem; color: #9966ff;">Corporate Tickets</h3>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 700; color: #9966ff;">152</div>
+                    <div style="font-size: 0.75rem; color: #9090a0; text-transform: uppercase;">Tickets Sold</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 700; color: #4ade80;">19</div>
+                    <div style="font-size: 0.75rem; color: #9090a0; text-transform: uppercase;">On Startlist (12%)</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 700; color: #ff006b;">133</div>
+                    <div style="font-size: 0.75rem; color: #9090a0; text-transform: uppercase;">Pending (88%)</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 700; color: #9966ff;">£4,790</div>
+                    <div style="font-size: 0.75rem; color: #9090a0; text-transform: uppercase;">Revenue</div>
+                </div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Company</th>
+                            <th class="right">Tickets</th>
+                            <th class="right">Paid</th>
+                            <th class="right">Allocated</th>
+                            <th class="right">Pending</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Brookfield Asset Management</td>
+                            <td class="right" style="color: #9966ff; font-weight: 600;">100</td>
+                            <td class="right">£3,050</td>
+                            <td class="right" style="color: #4ade80;">0 (0%)</td>
+                            <td class="right" style="color: #ff006b;">100 (100%)</td>
+                        </tr>
+                        <tr>
+                            <td>Vantage</td>
+                            <td class="right" style="color: #9966ff; font-weight: 600;">20</td>
+                            <td class="right">£610</td>
+                            <td class="right" style="color: #4ade80;">0 (0%)</td>
+                            <td class="right" style="color: #ff006b;">20 (100%)</td>
+                        </tr>
+                        <tr>
+                            <td>Caplin Systems Ltd</td>
+                            <td class="right" style="color: #9966ff; font-weight: 600;">12</td>
+                            <td class="right">£450</td>
+                            <td class="right" style="color: #4ade80;">0 (0%)</td>
+                            <td class="right" style="color: #ff006b;">12 (100%)</td>
+                        </tr>
+                        <tr>
+                            <td>Momentum Global Investment Management</td>
+                            <td class="right" style="color: #9966ff; font-weight: 600;">10</td>
+                            <td class="right">£375</td>
+                            <td class="right" style="color: #4ade80;">0 (0%)</td>
+                            <td class="right" style="color: #ff006b;">10 (100%)</td>
+                        </tr>
+                        <tr>
+                            <td>Supagold Ltd</td>
+                            <td class="right" style="color: #9966ff; font-weight: 600;">10</td>
+                            <td class="right">£305</td>
+                            <td class="right" style="color: #4ade80;">10 (100%)</td>
+                            <td class="right" style="color: #6b7280;">0 (0%)</td>
+                        </tr>
+                        <tr>
+                            <td>Other Corporate (on startlist)</td>
+                            <td class="right" style="color: #9966ff; font-weight: 600;">—</td>
+                            <td class="right">—</td>
+                            <td class="right" style="color: #4ade80;">9</td>
+                            <td class="right" style="color: #6b7280;">—</td>
+                        </tr>
+                        <tr style="border-top: 2px solid rgba(153, 102, 255, 0.3); font-weight: 700;">
+                            <td>TOTAL</td>
+                            <td class="right" style="color: #9966ff;">152</td>
+                            <td class="right" style="color: #9966ff;">£4,790</td>
+                            <td class="right" style="color: #4ade80;">19 (12%)</td>
+                            <td class="right" style="color: #ff006b;">133 (88%)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="font-size: 0.75rem; color: #ff006b; margin-top: 1rem; font-weight: 500;">⚠️ 88% of corporate tickets (133) awaiting participant details from companies</p>
+        </div>
+
+        <!-- Weekly Table -->
+        <div class="table-section">
+            <h3 class="chart-title" style="margin-bottom: 1rem;">Weekly Breakdown</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Week</th>
+                            <th>Date Range</th>
+                            <th class="right">Weekly Sales</th>
+                            <th class="right">Cumulative</th>
+                            <th class="right">Target</th>
+                            <th class="right">vs Target</th>
+                        </tr>
+                    </thead>
+                    <tbody id="weeklyTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Friday Night Lights | Run The Wharf 2026</p>
+            <p style="margin-top: 0.5rem;">Event Date: 4 September 2026 | Launch: 18 January 2026</p>
+        </footer>
+    </div>
+
+    <script>
+        // ============ CONFIG ============
+        const launchDate = new Date('2026-01-18');
+        const eventDate = new Date('2026-09-04');
+        const today = new Date('2026-02-04');
+        const target = 4000;
+        
+        // Early bird sales (Sep-Oct 2025)
+        const earlyBirdTotal = 73;
+        
+        // 2026 Sales by Date (from launch onwards)
+        const salesByDate = {
+            '2026-01-20': 27,
+            '2026-01-21': 240,
+            '2026-01-22': 38,
+            '2026-01-23': 4,
+            '2026-01-24': 6,
+            '2026-01-26': 37,
+            '2026-01-27': 36,
+            '2026-01-28': 15,
+            '2026-01-29': 20,
+            '2026-01-30': 8,
+            '2026-01-31': 17,
+            '2026-02-01': 18,
+            '2026-02-02': 16,
+            '2026-02-03': 21
+        };
+        
+        // RTW 2025 Data
+        const rtw2025 = {
+            launchDate: new Date('2025-05-23'),
+            eventDate: new Date('2025-09-04'),
+            finalTotal: 2369,
+            salesByDate: {
+                '2025-05-23': 106, '2025-05-24': 202, '2025-05-27': 8, '2025-05-28': 4, '2025-05-29': 4,
+                '2025-05-30': 230, '2025-05-31': 24, '2025-06-01': 17, '2025-06-02': 9, '2025-06-03': 7,
+                '2025-06-04': 7, '2025-06-05': 8, '2025-06-06': 12, '2025-06-07': 3, '2025-06-08': 3,
+                '2025-06-09': 11, '2025-06-10': 5, '2025-06-11': 3, '2025-06-12': 9, '2025-06-13': 10,
+                '2025-06-14': 1, '2025-06-15': 7, '2025-06-16': 9, '2025-06-17': 1, '2025-06-18': 4,
+                '2025-06-19': 3, '2025-06-20': 4, '2025-06-21': 8, '2025-06-22': 10, '2025-06-27': 49,
+                '2025-06-28': 8, '2025-06-29': 3, '2025-06-30': 13, '2025-07-01': 12, '2025-07-02': 16,
+                '2025-07-03': 8, '2025-07-04': 7, '2025-07-05': 5, '2025-07-06': 12, '2025-07-07': 9,
+                '2025-07-08': 16, '2025-07-09': 6, '2025-07-10': 12, '2025-07-11': 17, '2025-07-12': 8,
+                '2025-07-13': 8, '2025-07-14': 11, '2025-07-15': 11, '2025-07-16': 17, '2025-07-17': 9,
+                '2025-07-18': 8, '2025-07-19': 8, '2025-07-20': 32, '2025-07-21': 23, '2025-07-22': 31,
+                '2025-07-23': 14, '2025-07-24': 49, '2025-07-25': 36, '2025-07-26': 16, '2025-07-27': 15,
+                '2025-07-28': 44, '2025-07-29': 48, '2025-07-30': 29, '2025-07-31': 27, '2025-08-01': 21,
+                '2025-08-02': 28, '2025-08-03': 9, '2025-08-04': 26, '2025-08-05': 27, '2025-08-06': 52,
+                '2025-08-07': 43, '2025-08-08': 17, '2025-08-09': 15, '2025-08-10': 15, '2025-08-11': 64,
+                '2025-08-12': 25, '2025-08-13': 24, '2025-08-14': 28, '2025-08-15': 22, '2025-08-16': 12,
+                '2025-08-17': 12, '2025-08-18': 32, '2025-08-19': 74, '2025-08-20': 24, '2025-08-21': 23,
+                '2025-08-22': 8, '2025-08-23': 14, '2025-08-24': 14, '2025-08-25': 9, '2025-08-26': 32,
+                '2025-08-27': 38, '2025-08-28': 24, '2025-08-29': 36, '2025-08-30': 15, '2025-08-31': 11,
+                '2025-09-01': 89, '2025-09-02': 65, '2025-09-03': 41, '2025-09-04': 14
+            }
+        };
+        
+        // Calculate totals
+        const postLaunchSales = Object.values(salesByDate).reduce((a, b) => a + b, 0);
+        const startlistTotal = earlyBirdTotal + postLaunchSales; // 576
+        
+        // Corporate tickets: 152 sold, but only 19 on startlist
+        const corpTicketsSold = 152;
+        const corpOnStartlist = 19;
+        const corpUnallocated = corpTicketsSold - corpOnStartlist; // 133
+        
+        // True total = startlist + unallocated corp
+        const totalSales = startlistTotal + corpUnallocated; // 709
+        const ticketsRemaining = target - totalSales; // 3291
+        
+        // Calculate days
+        const daysSinceLaunch = Math.floor((today - launchDate) / (1000 * 60 * 60 * 24));
+        const daysToEvent = Math.floor((eventDate - today) / (1000 * 60 * 60 * 24));
+        const totalDays = Math.floor((eventDate - launchDate) / (1000 * 60 * 60 * 24));
+        
+        // Calculate sales excluding first 2 days (20-21 Jan) for pace calculation
+        const first2DaysSales = (salesByDate['2026-01-20'] || 0) + (salesByDate['2026-01-21'] || 0);
+        const salesAfterFirst2Days = postLaunchSales - first2DaysSales;
+        const daysAfterFirst2Days = daysSinceLaunch - 2;
+        
+        // Calculate rates (excluding launch spike)
+        const currentDailyPace = salesAfterFirst2Days / daysAfterFirst2Days;
+        const requiredDailyRate = ticketsRemaining / daysToEvent;
+        const weeklyRequired = Math.ceil(requiredDailyRate * 7);
+        const projectedFinal = Math.round(totalSales + (currentDailyPace * daysToEvent));
+        
+        // ============ REVENUE CALCULATIONS ============
+        // RTW 2026 Budget from Entry Assumptions:
+        // Early Early Bird: 100 @ £25 = £2,500
+        // Early Bird: 750 @ £25 = £18,750  
+        // General: 2,750 @ £29.17 = £80,208
+        // Late: 400 @ £33.33 = £13,333
+        // Total: 4,000 tickets = £114,792 revenue target
+        
+        const revenueTarget = 114792; // £114,792 budget target
+        
+        // Pricing
+        const earlyEarlyBirdPrice = 25;
+        const earlyBirdPrice = 25;
+        const generalPrice = 29.17;
+        const latePrice = 33.33;
+        
+        // Actual revenue calculation:
+        // Non-corp startlist (557): 70 early bird @ £25 + 487 general @ £29.17
+        // Corporate (all 152): £4,790 (already paid)
+        const nonCorpStartlist = startlistTotal - corpOnStartlist; // 557
+        const earlyBirdSold = 70;
+        const generalNonCorpSold = nonCorpStartlist - earlyBirdSold; // 487
+        const corpRevenue = 4790;
+        
+        const revenueCurrent = (earlyBirdSold * earlyBirdPrice) + 
+                              (generalNonCorpSold * generalPrice) + 
+                              corpRevenue;
+        
+        const revenueRemaining = revenueTarget - revenueCurrent;
+        const revRequiredDaily = revenueRemaining / daysToEvent;
+        
+        // For pace calculation, use blended rate based on where we are in sales cycle
+        const avgPriceForPace = totalSales <= 850 ? earlyBirdPrice : 
+                                totalSales <= 3600 ? generalPrice : latePrice;
+        const revCurrentPace = currentDailyPace * avgPriceForPace;
+        
+        // Project final revenue based on ticket tiers
+        const projectedTickets = projectedFinal;
+        const projEarlyEarly = Math.min(projectedTickets, 100);
+        const projEarlyBird = Math.min(Math.max(0, projectedTickets - 100), 750);
+        const projGeneral = Math.min(Math.max(0, projectedTickets - 850), 2750);
+        const projLate = Math.max(0, projectedTickets - 3600);
+        const revProjected = Math.round(
+            (projEarlyEarly * earlyEarlyBirdPrice) +
+            (projEarlyBird * earlyBirdPrice) +
+            (projGeneral * generalPrice) +
+            (projLate * latePrice)
+        );
+        
+        // ============ UPDATE STATS ============
+        document.getElementById('totalTickets').textContent = totalSales.toLocaleString();
+        document.getElementById('ticketsRemaining').textContent = ticketsRemaining.toLocaleString();
+        document.getElementById('daysSinceLaunch').textContent = daysSinceLaunch;
+        document.getElementById('daysToEvent').textContent = daysToEvent;
+        document.getElementById('runRate').textContent = requiredDailyRate.toFixed(1);
+        document.getElementById('currentPace').textContent = currentDailyPace.toFixed(1);
+        document.getElementById('weeklyRequired').textContent = weeklyRequired.toLocaleString();
+        document.getElementById('projectedFinal').textContent = projectedFinal.toLocaleString();
+        
+        // Update revenue stats
+        document.getElementById('revRunRate').textContent = '£' + Math.round(revRequiredDaily).toLocaleString();
+        document.getElementById('revCurrent').textContent = '£' + revenueCurrent.toLocaleString();
+        document.getElementById('revCurrentPace').textContent = '£' + Math.round(revCurrentPace).toLocaleString();
+        document.getElementById('revProjected').textContent = '£' + revProjected.toLocaleString();
+        
+        const progressPct = ((totalSales / target) * 100).toFixed(1);
+        document.getElementById('progressPct').textContent = progressPct + '%';
+        document.getElementById('progressBar').style.width = progressPct + '%';
+        
+        // ============ BUILD WEEKLY DATA ============
+        function getWeekStart(date) {
+            const d = new Date(date);
+            const day = d.getDay();
+            const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Monday
+            return new Date(d.setDate(diff));
+        }
+        
+        function formatDate(date) {
+            return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+        }
+        
+        // Generate all weeks from launch to event
+        const weeks = [];
+        let currentWeekStart = getWeekStart(launchDate);
+        let weekNum = 1;
+        
+        while (currentWeekStart < eventDate) {
+            const weekEnd = new Date(currentWeekStart);
+            weekEnd.setDate(weekEnd.getDate() + 6);
+            
+            weeks.push({
+                num: weekNum,
+                start: new Date(currentWeekStart),
+                end: weekEnd > eventDate ? eventDate : weekEnd,
+                label: `W${weekNum}`,
+                dateRange: `${formatDate(currentWeekStart)} - ${formatDate(weekEnd > eventDate ? eventDate : weekEnd)}`
+            });
+            
+            currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+            weekNum++;
+        }
+        
+        // Calculate sales per week
+        let cumulativeWithEarlyBird = earlyBirdTotal; // Start with early bird
+        
+        weeks.forEach(week => {
+            let weeklySales = 0;
+            
+            Object.entries(salesByDate).forEach(([dateStr, count]) => {
+                const saleDate = new Date(dateStr);
+                if (saleDate >= week.start && saleDate <= week.end) {
+                    weeklySales += count;
+                }
+            });
+            
+            week.sales = weeklySales;
+            cumulativeWithEarlyBird += weeklySales;
+            week.cumulative = cumulativeWithEarlyBird;
+            
+            // Determine status
+            if (week.end < today) {
+                week.status = 'complete';
+            } else if (week.start <= today && week.end >= today) {
+                week.status = 'current';
+            } else {
+                week.status = 'future';
+            }
+        });
+        
+        // Calculate target pace per week (linear)
+        const ticketsPerWeek = (target - earlyBirdTotal) / weeks.length;
+        weeks.forEach((week, i) => {
+            week.targetCumulative = Math.round(earlyBirdTotal + (ticketsPerWeek * (i + 1)));
+        });
+        
+        // ============ BUILD RTW 2025 WEEKLY DATA ============
+        function getWeekStart2025(date) {
+            const d = new Date(date);
+            const day = d.getDay();
+            const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+            return new Date(d.setDate(diff));
+        }
+        
+        const weeks2025 = [];
+        let weekStart2025 = getWeekStart2025(rtw2025.launchDate);
+        let weekNum2025 = 1;
+        
+        while (weekStart2025 < rtw2025.eventDate) {
+            const weekEnd2025 = new Date(weekStart2025);
+            weekEnd2025.setDate(weekEnd2025.getDate() + 6);
+            
+            weeks2025.push({
+                num: weekNum2025,
+                start: new Date(weekStart2025),
+                end: weekEnd2025 > rtw2025.eventDate ? rtw2025.eventDate : weekEnd2025
+            });
+            
+            weekStart2025.setDate(weekStart2025.getDate() + 7);
+            weekNum2025++;
+        }
+        
+        // Calculate 2025 cumulative by week
+        let cumulative2025 = 0;
+        weeks2025.forEach(week => {
+            let weeklySales = 0;
+            Object.entries(rtw2025.salesByDate).forEach(([dateStr, count]) => {
+                const saleDate = new Date(dateStr);
+                if (saleDate >= week.start && saleDate <= week.end) {
+                    weeklySales += count;
+                }
+            });
+            cumulative2025 += weeklySales;
+            week.cumulative = cumulative2025;
+        });
+        
+        // ============ CHART ============
+        const ctx = document.getElementById('mainChart').getContext('2d');
+        
+        // Prepare chart data
+        const labels = ['Launch', ...weeks.map(w => w.label)];
+        const actualData = [earlyBirdTotal];
+        const targetData = [earlyBirdTotal];
+        const projectedData = [null];
+        const rtw2025Data = [0]; // 2025 started from 0
+        
+        let lastActual = earlyBirdTotal;
+        weeks.forEach((week, i) => {
+            if (week.status === 'complete' || week.status === 'current') {
+                actualData.push(week.cumulative);
+                lastActual = week.cumulative;
+            } else {
+                actualData.push(null);
+            }
+            targetData.push(week.targetCumulative);
+            
+            // Add 2025 data for same week number
+            if (weeks2025[i]) {
+                rtw2025Data.push(weeks2025[i].cumulative);
+            } else {
+                rtw2025Data.push(rtw2025.finalTotal); // After 2025 ended, show final
+            }
+        });
+        
+        // Build projection from current point
+        const currentWeekIndex = weeks.findIndex(w => w.status === 'current');
+        weeks.forEach((week, i) => {
+            if (i < currentWeekIndex) {
+                projectedData.push(null);
+            } else if (i === currentWeekIndex) {
+                projectedData.push(totalSales);
+            } else {
+                const weeksFromNow = i - currentWeekIndex;
+                projectedData.push(Math.round(totalSales + (currentDailyPace * 7 * weeksFromNow)));
+            }
+        });
+        
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'RTW 2026 Actual',
+                        data: actualData,
+                        borderColor: '#00ffd1',
+                        backgroundColor: 'rgba(0, 255, 209, 0.15)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 5,
+                        pointBackgroundColor: '#00ffd1',
+                        pointHoverRadius: 8
+                    },
+                    {
+                        label: 'RTW 2025 Actual',
+                        data: rtw2025Data,
+                        borderColor: '#9966ff',
+                        backgroundColor: 'transparent',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        pointRadius: 3,
+                        pointBackgroundColor: '#9966ff',
+                        pointHoverRadius: 6
+                    },
+                    {
+                        label: 'Target Pace (4,000)',
+                        data: targetData,
+                        borderColor: '#ffd700',
+                        backgroundColor: 'transparent',
+                        borderWidth: 2,
+                        borderDash: [0],
+                        tension: 0,
+                        pointRadius: 0,
+                        pointHoverRadius: 4
+                    },
+                    {
+                        label: 'RTW 2026 Projected',
+                        data: projectedData,
+                        borderColor: '#ff006b',
+                        backgroundColor: 'transparent',
+                        borderWidth: 2,
+                        borderDash: [6, 4],
+                        tension: 0.3,
+                        pointRadius: 0,
+                        pointHoverRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        ticks: { 
+                            color: '#606070',
+                            maxRotation: 45,
+                            font: { size: 10 }
+                        },
+                        grid: { color: '#2a2a38' }
+                    },
+                    y: {
+                        min: 0,
+                        max: 4500,
+                        ticks: { 
+                            color: '#606070',
+                            stepSize: 500
+                        },
+                        grid: { color: '#2a2a38' }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1a1a24',
+                        titleColor: '#f0f0f5',
+                        bodyColor: '#9090a0',
+                        borderColor: '#2a2a38',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y.toLocaleString() + ' tickets';
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            }
+        });
+        
+        // ============ WEEKLY TABLE ============
+        const tableBody = document.getElementById('weeklyTable');
+        
+        // Add early bird row
+        const earlyBirdRow = document.createElement('tr');
+        earlyBirdRow.innerHTML = `
+            <td><span class="status-dot complete"></span>Pre-Launch</td>
+            <td>Sep-Oct 2025</td>
+            <td class="right">${earlyBirdTotal}</td>
+            <td class="right" style="color: var(--accent-cyan); font-weight: 600;">${earlyBirdTotal}</td>
+            <td class="right">—</td>
+            <td class="right">—</td>
+        `;
+        tableBody.appendChild(earlyBirdRow);
+        
+        // Add week rows (show first 8 weeks + current)
+        const weeksToShow = weeks.filter(w => w.status !== 'future').concat(
+            weeks.filter(w => w.status === 'future').slice(0, 4)
+        );
+        
+        weeksToShow.forEach(week => {
+            const row = document.createElement('tr');
+            if (week.status === 'current') row.className = 'current-week';
+            if (week.status === 'future') row.className = 'future';
+            
+            const variance = week.status !== 'future' ? week.cumulative - week.targetCumulative : '—';
+            const varianceColor = variance > 0 ? 'var(--accent-green)' : variance < 0 ? 'var(--accent-pink)' : 'var(--text-muted)';
+            const varianceText = typeof variance === 'number' ? (variance >= 0 ? '+' : '') + variance : variance;
+            
+            row.innerHTML = `
+                <td><span class="status-dot ${week.status}"></span>${week.label}</td>
+                <td>${week.dateRange}</td>
+                <td class="right">${week.status !== 'future' ? week.sales : '—'}</td>
+                <td class="right" style="color: var(--accent-cyan); font-weight: 600;">${week.status !== 'future' ? week.cumulative.toLocaleString() : '—'}</td>
+                <td class="right">${week.targetCumulative.toLocaleString()}</td>
+                <td class="right" style="color: ${varianceColor};">${varianceText}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+        
+        // Add final target row
+        const finalRow = document.createElement('tr');
+        finalRow.style.borderTop = '2px solid var(--border)';
+        finalRow.innerHTML = `
+            <td><strong>EVENT DAY</strong></td>
+            <td>4 Sep 2026</td>
+            <td class="right">—</td>
+            <td class="right" style="color: var(--accent-yellow); font-weight: 700;">4,000</td>
+            <td class="right" style="font-weight: 700;">4,000</td>
+            <td class="right">—</td>
+        `;
+        tableBody.appendChild(finalRow);
+    </script>
+</body>
+</html>

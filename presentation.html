@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run The Wharf 2026 | Ticket Sales Update</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            background-color: #000; 
+            color: #fff; 
+            line-height: 1.5; 
+        }
+        
+        /* Presentation Slides */
+        .slide {
+            min-height: 100vh;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-bottom: 1px solid #1f2937;
+            position: relative;
+        }
+        
+        .slide-number {
+            position: absolute;
+            top: 2rem;
+            right: 3rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-family: monospace;
+        }
+        
+        /* Title Slide */
+        .title-slide {
+            text-align: center;
+            background: linear-gradient(135deg, rgba(0, 255, 209, 0.05), rgba(255, 0, 107, 0.05));
+        }
+        
+        .title-slide h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, #00FFD1, #FF006B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .title-slide .subtitle {
+            font-size: 1.5rem;
+            color: #9ca3af;
+            margin-bottom: 2rem;
+        }
+        
+        .title-slide .date {
+            font-size: 1.125rem;
+            color: #6b7280;
+        }
+        
+        /* Content Slides */
+        .slide h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: #00FFD1;
+        }
+        
+        .slide h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #fff;
+        }
+        
+        /* Neon Colors */
+        .neon-cyan { color: #00FFD1; }
+        .neon-pink { color: #FF006B; }
+        .neon-yellow { color: #FFD700; }
+        .neon-purple { color: #9966ff; }
+        
+        /* Metric Cards */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .metric-card {
+            background: #111827;
+            border: 1px solid #374151;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .metric-card.highlight {
+            border-color: #00FFD1;
+            background: rgba(0, 255, 209, 0.1);
+        }
+        
+        .metric-card.warning {
+            border-color: #FFD700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+        
+        .metric-card.danger {
+            border-color: #FF006B;
+            background: rgba(255, 0, 107, 0.1);
+        }
+        
+        .metric-card.success {
+            border-color: #4ade80;
+            background: rgba(74, 222, 128, 0.1);
+        }
+        
+        .metric-label {
+            font-size: 0.875rem;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric-value {
+            font-size: 3rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+        
+        .metric-subtext {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.5rem;
+        }
+        
+        /* Big Number */
+        .big-number {
+            font-size: 8rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+        
+        .big-label {
+            font-size: 1.5rem;
+            color: #9ca3af;
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            background: #1f2937;
+            border-radius: 999px;
+            height: 2rem;
+            overflow: hidden;
+            margin: 1.5rem 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00FFD1, #00FFD1);
+            border-radius: 999px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+        
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        
+        th {
+            text-align: left;
+            padding: 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-bottom: 1px solid #374151;
+        }
+        
+        th.right { text-align: right; }
+        
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #1f2937;
+            font-size: 1rem;
+        }
+        
+        td.right { text-align: right; }
+        
+        tr:last-child td { border-bottom: none; }
+        
+        .table-highlight {
+            background: rgba(0, 255, 209, 0.1);
+            font-weight: 600;
+        }
+        
+        /* Chart Container */
+        .chart-container {
+            height: 350px;
+            margin: 2rem 0;
+        }
+        
+        .chart-legend {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #9ca3af;
+        }
+        
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        /* Two Column Layout */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .status-badge.on-track {
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+        
+        .status-badge.warning {
+            background: rgba(255, 215, 0, 0.2);
+            color: #FFD700;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        
+        .status-badge.at-risk {
+            background: rgba(255, 0, 107, 0.2);
+            color: #FF006B;
+            border: 1px solid rgba(255, 0, 107, 0.3);
+        }
+        
+        /* Comparison Box */
+        .comparison-box {
+            background: #111827;
+            border: 1px solid #374151;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .comparison-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #1f2937;
+        }
+        
+        .comparison-row:last-child {
+            border-bottom: none;
+        }
+        
+        /* Key Insight */
+        .insight-box {
+            background: linear-gradient(135deg, rgba(0, 255, 209, 0.1), rgba(0, 255, 209, 0.05));
+            border-left: 4px solid #00FFD1;
+            padding: 1.5rem;
+            border-radius: 0 12px 12px 0;
+            margin: 2rem 0;
+        }
+        
+        .insight-box h4 {
+            color: #00FFD1;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .insight-box p {
+            color: #d1d5db;
+            font-size: 1.125rem;
+        }
+        
+        /* Footer */
+        .slide-footer {
+            position: absolute;
+            bottom: 2rem;
+            left: 3rem;
+            right: 3rem;
+            display: flex;
+            justify-content: space-between;
+            color: #6b7280;
+            font-size: 0.75rem;
+        }
+        
+        /* Print Styles */
+        @media print {
+            .slide {
+                page-break-after: always;
+                min-height: 100vh;
+            }
+            body {
+                background: #000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SLIDE 1: Title -->
+    <div class="slide title-slide">
+        <h1>Run The Wharf 2026</h1>
+        <p class="subtitle">Ticket Sales Update</p>
+        <p class="date">4 February 2026</p>
+        <div class="slide-footer">
+            <span>Friday Night Lights</span>
+            <span>Confidential</span>
+        </div>
+    </div>
+
+    <!-- SLIDE 2: Headline Numbers -->
+    <div class="slide">
+        <span class="slide-number">01</span>
+        <h2>Where We Are</h2>
+        
+        <div class="two-col">
+            <div style="text-align: center;">
+                <div class="big-number neon-cyan">709</div>
+                <div class="big-label">Tickets Sold</div>
+            </div>
+            <div>
+                <div class="metrics-grid" style="grid-template-columns: 1fr 1fr;">
+                    <div class="metric-card">
+                        <div class="metric-label">Target</div>
+                        <div class="metric-value neon-yellow">4,000</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Remaining</div>
+                        <div class="metric-value" style="color: #9ca3af;">3,291</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Days Since Launch</div>
+                        <div class="metric-value">17</div>
+                        <div class="metric-subtext">WC 18 Jan 2026</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Days to Event</div>
+                        <div class="metric-value">212</div>
+                        <div class="metric-subtext">4 Sep 2026</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 2rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span>Progress to Target</span>
+                <span class="neon-cyan">17.7%</span>
+            </div>
+            <div class="progress-container">
+                <div class="progress-fill" style="width: 17.7%;"></div>
+            </div>
+            <div class="progress-labels">
+                <span>0</span>
+                <span>1,000</span>
+                <span>2,000</span>
+                <span>3,000</span>
+                <span>4,000</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 3: Run Rates -->
+    <div class="slide">
+        <span class="slide-number">02</span>
+        <h2>Run Rate Analysis</h2>
+        
+        <div class="two-col">
+            <div>
+                <h3>Ticket Sales</h3>
+                <div class="metrics-grid" style="grid-template-columns: 1fr;">
+                    <div class="metric-card highlight">
+                        <div class="metric-label">Required Daily Rate</div>
+                        <div class="metric-value neon-cyan">16.2</div>
+                        <div class="metric-subtext">tickets/day to hit 4,000</div>
+                    </div>
+                    <div class="metric-card success">
+                        <div class="metric-label">Current Pace</div>
+                        <div class="metric-value" style="color: #4ade80;">15.7</div>
+                        <div class="metric-subtext">tickets/day (excl. launch spike)</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Projected Final</div>
+                        <div class="metric-value">3,911</div>
+                        <div class="metric-subtext">at current pace</div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h3>Revenue</h3>
+                <div class="metrics-grid" style="grid-template-columns: 1fr;">
+                    <div class="metric-card warning">
+                        <div class="metric-label">Required Daily Revenue</div>
+                        <div class="metric-value neon-yellow">£465</div>
+                        <div class="metric-subtext">to hit £114,792 target</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Revenue to Date</div>
+                        <div class="metric-value">£14,400</div>
+                        <div class="metric-subtext">709 tickets @ early bird pricing</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Projected Revenue</div>
+                        <div class="metric-value">£106k</div>
+                        <div class="metric-subtext">at current pace</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="insight-box">
+            <h4>💡 Key Insight</h4>
+            <p>Current pace (15.7/day) is just below required rate (16.2/day). Projected to land ~90 tickets short of target — essentially on track with minor uplift needed.</p>
+        </div>
+    </div>
+
+    <!-- SLIDE 4: Pricing Tiers -->
+    <div class="slide">
+        <span class="slide-number">03</span>
+        <h2>Sales by Ticket Type</h2>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Ticket Type</th>
+                    <th class="right">Sold</th>
+                    <th class="right">Date Range</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>First Release (Early Bird)</td>
+                    <td class="right neon-cyan">70</td>
+                    <td class="right" style="color: #6b7280;">Sep 2025</td>
+                </tr>
+                <tr class="table-highlight">
+                    <td>General Entry - 1st Release</td>
+                    <td class="right neon-cyan">100</td>
+                    <td class="right" style="color: #6b7280;">21 Jan 2026</td>
+                </tr>
+                <tr class="table-highlight">
+                    <td>General Entry - 2nd Release</td>
+                    <td class="right neon-cyan">178</td>
+                    <td class="right" style="color: #6b7280;">21-22 Jan 2026</td>
+                </tr>
+                <tr>
+                    <td>General Entry - General Release</td>
+                    <td class="right neon-cyan">169</td>
+                    <td class="right" style="color: #6b7280;">26 Jan - 3 Feb 2026</td>
+                </tr>
+                <tr>
+                    <td>General Entry (Other)</td>
+                    <td class="right">40</td>
+                    <td class="right" style="color: #6b7280;">Various</td>
+                </tr>
+                <tr style="background: rgba(153, 102, 255, 0.15);">
+                    <td><span class="neon-purple">Corporate Entry</span></td>
+                    <td class="right neon-purple">19*</td>
+                    <td class="right" style="color: #6b7280;">27-29 Jan 2026</td>
+                </tr>
+                <tr style="border-top: 2px solid #374151; font-weight: 700;">
+                    <td>ON STARTLIST</td>
+                    <td class="right neon-yellow">709</td>
+                    <td class="right"></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="insight-box" style="background: linear-gradient(135deg, rgba(153, 102, 255, 0.1), rgba(153, 102, 255, 0.05)); border-left-color: #9966ff;">
+            <h4 style="color: #9966ff;">⚡ Corporate Update</h4>
+            <p><strong>152 corporate tickets</strong> sold across 6 companies (£4,790 revenue). Only 19 currently on startlist — remaining 133 pending participant details from companies.</p>
+        </div>
+    </div>
+
+    <!-- SLIDE 4a: Corporate Breakdown -->
+    <div class="slide">
+        <span class="slide-number">04</span>
+        <h2 style="color: #9966ff;">Corporate Tickets</h2>
+        
+        <div class="metrics-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 2rem;">
+            <div class="metric-card" style="border-color: #9966ff; background: rgba(153, 102, 255, 0.1);">
+                <div class="metric-label">Tickets Sold</div>
+                <div class="metric-value neon-purple">152</div>
+                <div class="metric-subtext">6 companies</div>
+            </div>
+            <div class="metric-card success">
+                <div class="metric-label">On Startlist</div>
+                <div class="metric-value" style="color: #4ade80;">19</div>
+                <div class="metric-subtext">12% allocated</div>
+            </div>
+            <div class="metric-card danger">
+                <div class="metric-label">Pending</div>
+                <div class="metric-value neon-pink">133</div>
+                <div class="metric-subtext">88% awaiting details</div>
+            </div>
+            <div class="metric-card" style="border-color: #9966ff; background: rgba(153, 102, 255, 0.1);">
+                <div class="metric-label">Revenue</div>
+                <div class="metric-value neon-purple">£4,790</div>
+                <div class="metric-subtext">£31.51 avg</div>
+            </div>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Company</th>
+                    <th class="right">Tickets</th>
+                    <th class="right">Allocated</th>
+                    <th class="right">Pending</th>
+                    <th class="right">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="background: rgba(255, 0, 107, 0.1);">
+                    <td><strong>Brookfield Asset Management</strong></td>
+                    <td class="right neon-purple">100</td>
+                    <td class="right" style="color: #4ade80;">0 (0%)</td>
+                    <td class="right neon-pink">100 (100%)</td>
+                    <td class="right"><span class="status-badge at-risk">PENDING</span></td>
+                </tr>
+                <tr style="background: rgba(255, 0, 107, 0.1);">
+                    <td>Vantage</td>
+                    <td class="right neon-purple">20</td>
+                    <td class="right" style="color: #4ade80;">0 (0%)</td>
+                    <td class="right neon-pink">20 (100%)</td>
+                    <td class="right"><span class="status-badge at-risk">PENDING</span></td>
+                </tr>
+                <tr style="background: rgba(255, 0, 107, 0.1);">
+                    <td>Caplin Systems Ltd</td>
+                    <td class="right neon-purple">12</td>
+                    <td class="right" style="color: #4ade80;">0 (0%)</td>
+                    <td class="right neon-pink">12 (100%)</td>
+                    <td class="right"><span class="status-badge at-risk">PENDING</span></td>
+                </tr>
+                <tr style="background: rgba(255, 0, 107, 0.1);">
+                    <td>Momentum Global</td>
+                    <td class="right neon-purple">10</td>
+                    <td class="right" style="color: #4ade80;">0 (0%)</td>
+                    <td class="right neon-pink">10 (100%)</td>
+                    <td class="right"><span class="status-badge at-risk">PENDING</span></td>
+                </tr>
+                <tr style="background: rgba(74, 222, 128, 0.1);">
+                    <td>Supagold Ltd</td>
+                    <td class="right neon-purple">10</td>
+                    <td class="right" style="color: #4ade80;">10 (100%)</td>
+                    <td class="right" style="color: #6b7280;">0 (0%)</td>
+                    <td class="right"><span class="status-badge on-track">COMPLETE</span></td>
+                </tr>
+                <tr style="border-top: 2px solid #9966ff; font-weight: 700;">
+                    <td>TOTAL</td>
+                    <td class="right neon-purple">152</td>
+                    <td class="right" style="color: #4ade80;">19 (12%)</td>
+                    <td class="right neon-pink">133 (88%)</td>
+                    <td class="right"></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="insight-box" style="background: linear-gradient(135deg, rgba(255, 0, 107, 0.1), rgba(255, 0, 107, 0.05)); border-left-color: #FF006B;">
+            <h4 style="color: #FF006B;">⚠️ Action Required</h4>
+            <p><strong>88% of corporate tickets</strong> (133) still awaiting participant details. Chase companies for names — especially Brookfield (100 tickets).</p>
+        </div>
+    </div>
+
+    <!-- SLIDE 5: Chart -->
+    <div class="slide">
+        <span class="slide-number">04</span>
+        <h2>Sales Trajectory</h2>
+        
+        <div class="chart-container">
+            <canvas id="salesChart"></canvas>
+        </div>
+        
+        <div class="chart-legend">
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #00FFD1;"></div>
+                RTW 2026 Actual
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #9966ff;"></div>
+                RTW 2025 Actual
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #FFD700;"></div>
+                Target Pace (4,000)
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background: #FF006B;"></div>
+                RTW 2026 Projected
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 6: vs 2025 -->
+    <div class="slide">
+        <span class="slide-number">14</span>
+        <h2>vs RTW 2025</h2>
+        
+        <div class="two-col">
+            <div class="comparison-box">
+                <h3 style="margin-bottom: 1rem;">RTW 2025</h3>
+                <div class="comparison-row">
+                    <span style="color: #9ca3af;">Launch Date</span>
+                    <span>23 May 2025</span>
+                </div>
+                <div class="comparison-row">
+                    <span style="color: #9ca3af;">Event Date</span>
+                    <span>4 Sep 2025</span>
+                </div>
+                <div class="comparison-row">
+                    <span style="color: #9ca3af;">Lead Time</span>
+                    <span>104 days</span>
+                </div>
+                <div class="comparison-row">
+                    <span style="color: #9ca3af;">Final Tickets</span>
+                    <span class="neon-purple" style="font-size: 1.5rem; font-weight: 700;">2,369</span>
+                </div>
+            </div>
+            <div class="comparison-box" style="border-color: #00FFD1;">
+                <h3 style="margin-bottom: 1rem;">RTW 2026</h3>
+                <div class="comparison-row">
+                    <span style="color: #9ca3af;">Launch Date</span>
+                    <span>18 Jan 2026</span>
+                </div>
+                <div class="comparison-row">
+                    <span style="color: #9ca3af;">Event Date</span>
+                    <span>4 Sep 2026</span>
+                </div>
+                <div class="comparison-row">
+                    <span style="color: #9ca3af;">Lead Time</span>
+                    <span class="neon-cyan">229 days</span>
+                </div>
+                <div class="comparison-row">
+                    <span style="color: #9ca3af;">Target</span>
+                    <span class="neon-yellow" style="font-size: 1.5rem; font-weight: 700;">4,000</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="insight-box">
+            <h4>💡 Key Advantage</h4>
+            <p>2026 has <strong>2.2× more lead time</strong> than 2025 (229 days vs 104 days). This extended runway provides more opportunity to hit the ambitious 4,000 target.</p>
+        </div>
+    </div>
+
+    <!-- SLIDE 7: Summary -->
+    <div class="slide">
+        <span class="slide-number">14</span>
+        <h2>Summary</h2>
+        
+        <div class="metrics-grid" style="margin-bottom: 2rem;">
+            <div class="metric-card highlight">
+                <div class="metric-label">Tickets Sold</div>
+                <div class="metric-value neon-cyan">709</div>
+                <div class="metric-subtext">17.7% of target</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Current Pace</div>
+                <div class="metric-value">15.7</div>
+                <div class="metric-subtext">tickets/day</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Required Pace</div>
+                <div class="metric-value">16.2</div>
+                <div class="metric-subtext">tickets/day</div>
+            </div>
+            <div class="metric-card success">
+                <div class="metric-label">Projected Final</div>
+                <div class="metric-value" style="color: #4ade80;">3,911</div>
+                <div class="metric-subtext">98% of target</div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 3rem;">
+            <span class="status-badge on-track">ON TRACK</span>
+            <p style="color: #9ca3af; margin-top: 1rem; font-size: 1.125rem;">
+                Tracking to land ~90 tickets short of 4,000 target.<br>
+                Minor pace increase needed to close the gap.
+            </p>
+        </div>
+        
+        <div class="slide-footer">
+            <span>Friday Night Lights</span>
+            <span>Data as of 4 February 2026</span>
+        </div>
+    </div>
+
+    <!-- SLIDE 7: Weekly Breakdown -->
+    <div class="slide">
+        <span class="slide-number">14</span>
+        <h2>Weekly Sales Breakdown</h2>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Week</th>
+                    <th class="right">Sales</th>
+                    <th class="right">Cumulative</th>
+                    <th class="right">Target</th>
+                    <th class="right">Variance</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Pre-Launch (Early Bird)</td>
+                    <td class="right">73</td>
+                    <td class="right">73</td>
+                    <td class="right">—</td>
+                    <td class="right" style="color: #6b7280;">—</td>
+                </tr>
+                <tr class="table-highlight">
+                    <td>WC 20 Jan (Launch)</td>
+                    <td class="right neon-cyan">267</td>
+                    <td class="right">340</td>
+                    <td class="right">186</td>
+                    <td class="right" style="color: #4ade80;">+154</td>
+                </tr>
+                <tr>
+                    <td>WC 27 Jan</td>
+                    <td class="right">163</td>
+                    <td class="right">503</td>
+                    <td class="right">299</td>
+                    <td class="right" style="color: #4ade80;">+204</td>
+                </tr>
+                <tr>
+                    <td>WC 3 Feb (Current)</td>
+                    <td class="right">73</td>
+                    <td class="right neon-cyan">709</td>
+                    <td class="right">412</td>
+                    <td class="right" style="color: #4ade80;">+164</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="insight-box">
+            <h4>💡 Launch Spike Analysis</h4>
+            <p>Launch week delivered 267 tickets (46% of total sales). Excluding this spike, the sustainable weekly run rate is ~110 tickets/week — in line with target pace of 113/week.</p>
+        </div>
+    </div>
+
+    <!-- SLIDE 8: Revenue Waterfall -->
+    <div class="slide">
+        <span class="slide-number">14</span>
+        <h2>Revenue Analysis</h2>
+        
+        <div class="two-col">
+            <div>
+                <h3>Budget (Entry Assumptions)</h3>
+                <div class="comparison-box">
+                    <div class="comparison-row">
+                        <span style="color: #9ca3af;">Early Early Bird (100)</span>
+                        <span>£2,500</span>
+                    </div>
+                    <div class="comparison-row">
+                        <span style="color: #9ca3af;">Early Bird (750)</span>
+                        <span>£18,750</span>
+                    </div>
+                    <div class="comparison-row">
+                        <span style="color: #9ca3af;">General (2,750)</span>
+                        <span>£80,208</span>
+                    </div>
+                    <div class="comparison-row">
+                        <span style="color: #9ca3af;">Late (400)</span>
+                        <span>£13,333</span>
+                    </div>
+                    <div class="comparison-row" style="font-weight: 700; border-top: 1px solid #374151;">
+                        <span>Budget Target</span>
+                        <span class="neon-yellow">£114,792</span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h3>Current Sales (709 tickets)</h3>
+                <div class="comparison-box" style="border-color: #00FFD1;">
+                    <div class="comparison-row">
+                        <span style="color: #9ca3af;">First Release / Early Bird (70)</span>
+                        <span>£1,750</span>
+                    </div>
+                    <div class="comparison-row">
+                        <span style="color: #9ca3af;">General Entry (487)</span>
+                        <span>£14,206</span>
+                    </div>
+                    <div class="comparison-row" style="background: rgba(153, 102, 255, 0.1);">
+                        <span style="color: #9966ff;">Corporate (152 total)</span>
+                        <span style="color: #9966ff;">£4,790</span>
+                    </div>
+                    <div class="comparison-row" style="font-weight: 700; border-top: 1px solid #374151;">
+                        <span>Revenue to Date</span>
+                        <span class="neon-cyan">£20,746</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="metrics-grid" style="grid-template-columns: repeat(4, 1fr); margin-top: 2rem;">
+            <div class="metric-card highlight">
+                <div class="metric-label">Revenue to Date</div>
+                <div class="metric-value neon-cyan">£20.7k</div>
+                <div class="metric-subtext">709 tickets</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Budget Target</div>
+                <div class="metric-value">£114.8k</div>
+                <div class="metric-subtext">4,000 tickets</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Avg Ticket Price</div>
+                <div class="metric-value">£29.26</div>
+                <div class="metric-subtext">blended rate</div>
+            </div>
+            <div class="metric-card success">
+                <div class="metric-label">% of Budget</div>
+                <div class="metric-value" style="color: #4ade80;">18.1%</div>
+                <div class="metric-subtext">on track</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 9: Scenarios -->
+    <div class="slide">
+        <span class="slide-number">14</span>
+        <h2>Scenarios</h2>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Scenario</th>
+                    <th class="right">Daily Rate</th>
+                    <th class="right">Final Tickets</th>
+                    <th class="right">Revenue</th>
+                    <th class="right">vs Target</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="background: rgba(255, 0, 107, 0.1);">
+                    <td><span class="neon-pink">▼</span> Pessimistic</td>
+                    <td class="right">12.0</td>
+                    <td class="right">3,120</td>
+                    <td class="right">£83,500</td>
+                    <td class="right neon-pink">-880 / -£31k</td>
+                </tr>
+                <tr style="background: rgba(0, 255, 209, 0.1);">
+                    <td><span class="neon-cyan">●</span> Current Pace</td>
+                    <td class="right">15.7</td>
+                    <td class="right">3,911</td>
+                    <td class="right">£106,380</td>
+                    <td class="right neon-yellow">-89 / -£8k</td>
+                </tr>
+                <tr style="background: rgba(74, 222, 128, 0.1);">
+                    <td><span style="color: #4ade80;">▲</span> On Target</td>
+                    <td class="right">16.2</td>
+                    <td class="right">4,000</td>
+                    <td class="right">£114,792</td>
+                    <td class="right" style="color: #4ade80;">✓ On Budget</td>
+                </tr>
+                <tr style="background: rgba(255, 215, 0, 0.1);">
+                    <td><span class="neon-yellow">★</span> Optimistic</td>
+                    <td class="right">20.0</td>
+                    <td class="right">4,816</td>
+                    <td class="right">£138,500</td>
+                    <td class="right neon-yellow">+816 / +£24k</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="insight-box">
+            <h4>💡 To Hit Target</h4>
+            <p>Need to increase daily run rate from <strong>15.7 → 16.2</strong> (+0.5 tickets/day). This equates to just <strong>3-4 extra tickets per week</strong>.</p>
+        </div>
+    </div>
+
+    <!-- SLIDE 10: Key Milestones -->
+    <div class="slide">
+        <span class="slide-number">14</span>
+        <h2>Key Milestones</h2>
+        
+        <div class="metrics-grid" style="grid-template-columns: repeat(4, 1fr);">
+            <div class="metric-card highlight">
+                <div class="metric-label">1,000 Tickets</div>
+                <div class="metric-value neon-cyan">25%</div>
+                <div class="metric-subtext">~Mid March</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">2,000 Tickets</div>
+                <div class="metric-value">50%</div>
+                <div class="metric-subtext">~Early May</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">3,000 Tickets</div>
+                <div class="metric-value">75%</div>
+                <div class="metric-subtext">~Late June</div>
+            </div>
+            <div class="metric-card warning">
+                <div class="metric-label">4,000 Tickets</div>
+                <div class="metric-value neon-yellow">100%</div>
+                <div class="metric-subtext">Event Day (4 Sep)</div>
+            </div>
+        </div>
+        
+        <h3 style="margin-top: 2rem;">Upcoming Pricing Transitions</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Milestone</th>
+                    <th class="right">At Ticket #</th>
+                    <th class="right">Price Change</th>
+                    <th class="right">Est. Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="table-highlight">
+                    <td>Early Early Bird Sold Out</td>
+                    <td class="right">100</td>
+                    <td class="right">—</td>
+                    <td class="right neon-cyan">DONE</td>
+                </tr>
+                <tr>
+                    <td>Early Bird Sold Out</td>
+                    <td class="right">850</td>
+                    <td class="right">£25 → £29.17</td>
+                    <td class="right">~Late Feb</td>
+                </tr>
+                <tr>
+                    <td>General Sold Out</td>
+                    <td class="right">3,600</td>
+                    <td class="right">£29.17 → £33.33</td>
+                    <td class="right">~Mid Aug</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- SLIDE 11: Risks & Opportunities -->
+    <div class="slide">
+        <span class="slide-number">14</span>
+        <h2>Risks & Opportunities</h2>
+        
+        <div class="two-col">
+            <div>
+                <h3 style="color: #FF006B;">⚠️ Risks</h3>
+                <div class="comparison-box" style="border-color: rgba(255, 0, 107, 0.3); background: rgba(255, 0, 107, 0.05);">
+                    <div class="comparison-row">
+                        <span>Post-launch momentum drop</span>
+                    </div>
+                    <div class="comparison-row">
+                        <span>Summer holiday slowdown (Jul-Aug)</span>
+                    </div>
+                    <div class="comparison-row">
+                        <span>Economic uncertainty affecting discretionary spend</span>
+                    </div>
+                    <div class="comparison-row">
+                        <span>Competitor events in same window</span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h3 style="color: #4ade80;">✓ Opportunities</h3>
+                <div class="comparison-box" style="border-color: rgba(74, 222, 128, 0.3); background: rgba(74, 222, 128, 0.05);">
+                    <div class="comparison-row">
+                        <span>2.2× longer lead time vs 2025</span>
+                    </div>
+                    <div class="comparison-row">
+                        <span>Corporate team entries</span>
+                    </div>
+                    <div class="comparison-row">
+                        <span>Spring marketing push (Mar-Apr)</span>
+                    </div>
+                    <div class="comparison-row">
+                        <span>Price increase messaging as tiers sell out</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="insight-box" style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05)); border-left-color: #FFD700;">
+            <h4 style="color: #FFD700;">⚡ Quick Win</h4>
+            <p>Early Bird tier (750 places) will sell out at ~850 total tickets. Use "price increase" messaging to drive urgency — should help convert fence-sitters in next 2-3 weeks.</p>
+        </div>
+    </div>
+
+    <!-- SLIDE 12: Next Steps -->
+    <div class="slide">
+        <span class="slide-number">14</span>
+        <h2>Next Steps</h2>
+        
+        <div class="metrics-grid" style="grid-template-columns: 1fr;">
+            <div class="comparison-box">
+                <h3 style="margin-bottom: 1rem;">Immediate (This Week)</h3>
+                <div class="comparison-row">
+                    <span>1. Monitor daily sales — target 16+ tickets/day</span>
+                    <span class="status-badge on-track">Priority</span>
+                </div>
+                <div class="comparison-row">
+                    <span>2. Prepare "Early Bird ending soon" comms</span>
+                    <span style="color: #6b7280;">~274 places left</span>
+                </div>
+            </div>
+            
+            <div class="comparison-box">
+                <h3 style="margin-bottom: 1rem;">Short Term (Feb-Mar)</h3>
+                <div class="comparison-row">
+                    <span>3. Corporate outreach — team entry packages</span>
+                    <span style="color: #6b7280;">Q1</span>
+                </div>
+                <div class="comparison-row">
+                    <span>4. Social proof campaign — 2025 testimonials</span>
+                    <span style="color: #6b7280;">Ongoing</span>
+                </div>
+                <div class="comparison-row">
+                    <span>5. Partner/influencer activations</span>
+                    <span style="color: #6b7280;">Mar</span>
+                </div>
+            </div>
+            
+            <div class="comparison-box">
+                <h3 style="margin-bottom: 1rem;">Key Checkpoints</h3>
+                <div class="comparison-row">
+                    <span>1,000 tickets milestone</span>
+                    <span class="neon-cyan">~Mid March</span>
+                </div>
+                <div class="comparison-row">
+                    <span>Early Bird sellout</span>
+                    <span class="neon-yellow">~Late Feb</span>
+                </div>
+                <div class="comparison-row">
+                    <span>50% sold (2,000 tickets)</span>
+                    <span>~Early May</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 13: Final Summary -->
+    <div class="slide title-slide">
+        <span class="slide-number">14</span>
+        
+        <div style="margin-bottom: 3rem;">
+            <span class="status-badge on-track" style="font-size: 1.25rem; padding: 0.75rem 2rem;">ON TRACK</span>
+        </div>
+        
+        <div class="metrics-grid" style="max-width: 800px; margin: 0 auto;">
+            <div class="metric-card highlight">
+                <div class="metric-label">Sold</div>
+                <div class="metric-value neon-cyan">709</div>
+                <div class="metric-subtext">inc. 133 pending corp</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Target</div>
+                <div class="metric-value neon-yellow">4,000</div>
+            </div>
+            <div class="metric-card success">
+                <div class="metric-label">Projected</div>
+                <div class="metric-value" style="color: #4ade80;">4,044</div>
+            </div>
+            <div class="metric-card" style="border-color: #9966ff;">
+                <div class="metric-label">Revenue</div>
+                <div class="metric-value neon-purple">£20.7k</div>
+                <div class="metric-subtext">18.1% of budget</div>
+            </div>
+        </div>
+        
+        <p style="color: #9ca3af; margin-top: 3rem; font-size: 1.25rem;">
+            Current pace lands us 101% of target.<br>
+            <span style="color: #FF006B;">Action: Chase 133 pending corp allocations</span>
+        </p>
+        
+        <div class="slide-footer">
+            <span>Friday Night Lights</span>
+            <span>Run The Wharf 2026 | 4 February 2026</span>
+        </div>
+    </div>
+
+    <script>
+        // Sales Chart
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        
+        // Generate week labels (simplified for presentation)
+        const weeks = ['Launch', 'Wk 1', 'Wk 2', 'Wk 3', 'Wk 4', 'Wk 8', 'Wk 12', 'Wk 16', 'Wk 20', 'Wk 24', 'Wk 28', 'Wk 32'];
+        
+        // 2026 actual data (includes 133 unallocated corp)
+        // Week 0: 73 early bird + 133 corp unallocated = 206 base
+        // Week 1: +267 launch = 473
+        // Week 2: +163 = 636
+        // Week 3: +73 = 709
+        const actual2026 = [206, 473, 636, 709, null, null, null, null, null, null, null, null];
+        
+        // 2026 projected (from week 3 onwards at 15.7/day)
+        const projected2026 = [null, null, null, 709, 819, 1258, 1697, 2136, 2575, 3014, 3453, 4044];
+        
+        // Target pace (linear to 4000)
+        const target = [206, 533, 860, 1187, 1514, 1841, 2168, 2495, 2822, 3149, 3476, 4000];
+        
+        // 2025 actual (scaled to same timeline - ended at 2369 after 15 weeks)
+        const actual2025 = [0, 308, 616, 789, 962, 1185, 1408, 1631, 1854, 2077, 2223, 2369];
+        
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: weeks,
+                datasets: [
+                    {
+                        label: 'RTW 2026 Actual',
+                        data: actual2026,
+                        borderColor: '#00FFD1',
+                        backgroundColor: 'rgba(0, 255, 209, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 5,
+                        pointBackgroundColor: '#00FFD1'
+                    },
+                    {
+                        label: 'RTW 2025 Actual',
+                        data: actual2025,
+                        borderColor: '#9966ff',
+                        backgroundColor: 'transparent',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        pointRadius: 3,
+                        pointBackgroundColor: '#9966ff'
+                    },
+                    {
+                        label: 'Target Pace',
+                        data: target,
+                        borderColor: '#FFD700',
+                        backgroundColor: 'transparent',
+                        borderWidth: 2,
+                        borderDash: [0],
+                        tension: 0,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'RTW 2026 Projected',
+                        data: projected2026,
+                        borderColor: '#FF006B',
+                        backgroundColor: 'transparent',
+                        borderWidth: 2,
+                        borderDash: [6, 4],
+                        tension: 0.3,
+                        pointRadius: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        ticks: { color: '#6b7280' },
+                        grid: { color: '#1f2937' }
+                    },
+                    y: {
+                        min: 0,
+                        max: 4500,
+                        ticks: { 
+                            color: '#6b7280',
+                            stepSize: 1000
+                        },
+                        grid: { color: '#1f2937' }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
