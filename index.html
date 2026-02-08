@@ -573,7 +573,7 @@
             </div>
             <div class="header-right">
                 <div class="live-badge">LIVE TRACKING</div>
-                <p class="last-updated">Last Updated: 4 Feb 2026</p>
+                <p class="last-updated">Last Updated: 8 Feb 2026</p>
             </div>
         </header>
 
@@ -581,8 +581,8 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-label">Total Tickets Sold</div>
-                <div class="stat-value" id="totalTickets">709</div>
-                <div class="stat-change">576 startlist + 133 unallocated corp</div>
+                <div class="stat-value" id="totalTickets">740</div>
+                <div class="stat-change">607 startlist + 133 unallocated corp</div>
             </div>
             <div class="stat-card" style="border-color: #9966ff;">
                 <div class="stat-label">Corporate Tickets</div>
@@ -596,17 +596,17 @@
             </div>
             <div class="stat-card pink">
                 <div class="stat-label">Tickets Remaining</div>
-                <div class="stat-value" id="ticketsRemaining">3,291</div>
+                <div class="stat-value" id="ticketsRemaining">3,260</div>
                 <div class="stat-change">to reach target</div>
             </div>
             <div class="stat-card green">
                 <div class="stat-label">Days Since Launch</div>
-                <div class="stat-value" id="daysSinceLaunch">17</div>
+                <div class="stat-value" id="daysSinceLaunch">21</div>
                 <div class="stat-change">WC 18 Jan 2026</div>
             </div>
             <div class="stat-card orange">
                 <div class="stat-label">Days to Event</div>
-                <div class="stat-value" id="daysToEvent">212</div>
+                <div class="stat-value" id="daysToEvent">208</div>
                 <div class="stat-change">4 Sep 2026</div>
             </div>
         </div>
@@ -615,10 +615,10 @@
         <div class="progress-section">
             <div class="progress-header">
                 <h2 class="progress-title">Progress to 4,000</h2>
-                <div class="progress-pct" id="progressPct">17.7%</div>
+                <div class="progress-pct" id="progressPct">18.5%</div>
             </div>
             <div class="progress-bar-container">
-                <div class="progress-bar actual" id="progressBar" style="width: 17.7%"></div>
+                <div class="progress-bar actual" id="progressBar" style="width: 18.5%"></div>
             </div>
             <div class="progress-markers">
                 <span>0</span>
@@ -631,17 +631,20 @@
 
         <!-- Main Chart -->
         <div class="chart-section">
-            <h3 class="chart-title">Weekly Sales Progress to Event Day</h3>
-            <p class="chart-subtitle">RTW 2026: Launch 18 Jan → Event 4 Sep | RTW 2025: Launch 23 May → Event 4 Sep (final: 2,369)</p>
+            <h3 class="chart-title">Sales Progress: Weeks to Event (Like-for-Like)</h3>
+            <p class="chart-subtitle">X-axis = weeks until event day | 2026: 33 wks lead time | 2025: 15 wks lead time (final: 2,369)</p>
             <div class="chart-container">
                 <canvas id="mainChart"></canvas>
             </div>
             <div class="legend">
-                <div class="legend-item"><div class="legend-dot cyan"></div> RTW 2026 Actual</div>
-                <div class="legend-item"><div class="legend-dot" style="background: #9966ff;"></div> RTW 2025 Actual</div>
+                <div class="legend-item"><div class="legend-dot cyan"></div> RTW 2026 Actual (33 wks lead)</div>
+                <div class="legend-item"><div class="legend-dot" style="background: #9966ff;"></div> RTW 2025 Actual (15 wks lead)</div>
                 <div class="legend-item"><div class="legend-dot yellow"></div> Target Pace (4,000)</div>
                 <div class="legend-item"><div class="legend-dot pink"></div> RTW 2026 Projected</div>
             </div>
+            <p style="text-align: center; color: var(--text-muted); font-size: 0.75rem; margin-top: 0.75rem;">
+                2025 line only appears from 12 weeks out — they hadn't launched yet when 2026 already has 740 tickets
+            </p>
         </div>
 
         <!-- Run Rate Cards - Side by Side -->
@@ -649,19 +652,19 @@
             <!-- Ticket Run Rate Card -->
             <div class="run-rate-section" style="margin-bottom: 0;">
                 <div class="run-rate-label">Required Daily Run Rate</div>
-                <div class="run-rate-value" id="runRate">16.2</div>
+                <div class="run-rate-value" id="runRate">15.7</div>
                 <div class="run-rate-unit">tickets per day to hit 4,000</div>
                 <div class="run-rate-detail" style="flex-direction: column; gap: 1rem;">
                     <div class="run-rate-item">
-                        <div class="run-rate-item-value" id="currentPace">29.6</div>
+                        <div class="run-rate-item-value" id="currentPace">14.1</div>
                         <div class="run-rate-item-label">Current Pace (excl. launch)</div>
                     </div>
                     <div class="run-rate-item">
-                        <div class="run-rate-item-value" id="weeklyRequired">113</div>
+                        <div class="run-rate-item-value" id="weeklyRequired">110</div>
                         <div class="run-rate-item-label">Weekly Target</div>
                     </div>
                     <div class="run-rate-item">
-                        <div class="run-rate-item-value" id="projectedFinal">2,860</div>
+                        <div class="run-rate-item-value" id="projectedFinal">3,663</div>
                         <div class="run-rate-item-label">Projected at Current Pace</div>
                     </div>
                 </div>
@@ -670,19 +673,19 @@
             <!-- Revenue Run Rate Card -->
             <div class="run-rate-section" style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(0, 255, 209, 0.1)); border-color: var(--accent-yellow); margin-bottom: 0;">
                 <div class="run-rate-label">Required Daily Revenue</div>
-                <div class="run-rate-value" id="revRunRate" style="color: var(--accent-yellow);">£567</div>
+                <div class="run-rate-value" id="revRunRate" style="color: var(--accent-yellow);">£452</div>
                 <div class="run-rate-unit">per day to hit £114,792 target</div>
                 <div class="run-rate-detail" style="flex-direction: column; gap: 1rem;">
                     <div class="run-rate-item">
-                        <div class="run-rate-item-value" id="revCurrent">£20,160</div>
+                        <div class="run-rate-item-value" id="revCurrent">£21,656</div>
                         <div class="run-rate-item-label">Revenue to Date</div>
                     </div>
                     <div class="run-rate-item">
-                        <div class="run-rate-item-value" id="revCurrentPace">£721</div>
+                        <div class="run-rate-item-value" id="revCurrentPace">£411</div>
                         <div class="run-rate-item-label">Current Daily Pace</div>
                     </div>
                     <div class="run-rate-item">
-                        <div class="run-rate-item-value" id="revProjected">£100,100</div>
+                        <div class="run-rate-item-value" id="revProjected">£107,000</div>
                         <div class="run-rate-item-label">Projected at Current Pace</div>
                     </div>
                 </div>
@@ -808,7 +811,7 @@
         // ============ CONFIG ============
         const launchDate = new Date('2026-01-18');
         const eventDate = new Date('2026-09-04');
-        const today = new Date('2026-02-04');
+        const today = new Date('2026-02-08');
         const target = 4000;
         
         // Early bird sales (Sep-Oct 2025)
@@ -829,7 +832,11 @@
             '2026-01-31': 17,
             '2026-02-01': 18,
             '2026-02-02': 16,
-            '2026-02-03': 21
+            '2026-02-03': 21,
+            '2026-02-04': 7,
+            '2026-02-05': 10,
+            '2026-02-06': 7,
+            '2026-02-07': 7
         };
         
         // RTW 2025 Data
@@ -837,33 +844,12 @@
             launchDate: new Date('2025-05-23'),
             eventDate: new Date('2025-09-04'),
             finalTotal: 2369,
-            salesByDate: {
-                '2025-05-23': 106, '2025-05-24': 202, '2025-05-27': 8, '2025-05-28': 4, '2025-05-29': 4,
-                '2025-05-30': 230, '2025-05-31': 24, '2025-06-01': 17, '2025-06-02': 9, '2025-06-03': 7,
-                '2025-06-04': 7, '2025-06-05': 8, '2025-06-06': 12, '2025-06-07': 3, '2025-06-08': 3,
-                '2025-06-09': 11, '2025-06-10': 5, '2025-06-11': 3, '2025-06-12': 9, '2025-06-13': 10,
-                '2025-06-14': 1, '2025-06-15': 7, '2025-06-16': 9, '2025-06-17': 1, '2025-06-18': 4,
-                '2025-06-19': 3, '2025-06-20': 4, '2025-06-21': 8, '2025-06-22': 10, '2025-06-27': 49,
-                '2025-06-28': 8, '2025-06-29': 3, '2025-06-30': 13, '2025-07-01': 12, '2025-07-02': 16,
-                '2025-07-03': 8, '2025-07-04': 7, '2025-07-05': 5, '2025-07-06': 12, '2025-07-07': 9,
-                '2025-07-08': 16, '2025-07-09': 6, '2025-07-10': 12, '2025-07-11': 17, '2025-07-12': 8,
-                '2025-07-13': 8, '2025-07-14': 11, '2025-07-15': 11, '2025-07-16': 17, '2025-07-17': 9,
-                '2025-07-18': 8, '2025-07-19': 8, '2025-07-20': 32, '2025-07-21': 23, '2025-07-22': 31,
-                '2025-07-23': 14, '2025-07-24': 49, '2025-07-25': 36, '2025-07-26': 16, '2025-07-27': 15,
-                '2025-07-28': 44, '2025-07-29': 48, '2025-07-30': 29, '2025-07-31': 27, '2025-08-01': 21,
-                '2025-08-02': 28, '2025-08-03': 9, '2025-08-04': 26, '2025-08-05': 27, '2025-08-06': 52,
-                '2025-08-07': 43, '2025-08-08': 17, '2025-08-09': 15, '2025-08-10': 15, '2025-08-11': 64,
-                '2025-08-12': 25, '2025-08-13': 24, '2025-08-14': 28, '2025-08-15': 22, '2025-08-16': 12,
-                '2025-08-17': 12, '2025-08-18': 32, '2025-08-19': 74, '2025-08-20': 24, '2025-08-21': 23,
-                '2025-08-22': 8, '2025-08-23': 14, '2025-08-24': 14, '2025-08-25': 9, '2025-08-26': 32,
-                '2025-08-27': 38, '2025-08-28': 24, '2025-08-29': 36, '2025-08-30': 15, '2025-08-31': 11,
-                '2025-09-01': 89, '2025-09-02': 65, '2025-09-03': 41, '2025-09-04': 14
-            }
+            leadTimeWeeks: 15
         };
         
         // Calculate totals
         const postLaunchSales = Object.values(salesByDate).reduce((a, b) => a + b, 0);
-        const startlistTotal = earlyBirdTotal + postLaunchSales; // 576
+        const startlistTotal = earlyBirdTotal + postLaunchSales; // 607
         
         // Corporate tickets: 152 sold, but only 19 on startlist
         const corpTicketsSold = 152;
@@ -871,8 +857,8 @@
         const corpUnallocated = corpTicketsSold - corpOnStartlist; // 133
         
         // True total = startlist + unallocated corp
-        const totalSales = startlistTotal + corpUnallocated; // 709
-        const ticketsRemaining = target - totalSales; // 3291
+        const totalSales = startlistTotal + corpUnallocated; // 740
+        const ticketsRemaining = target - totalSales; // 3260
         
         // Calculate days
         const daysSinceLaunch = Math.floor((today - launchDate) / (1000 * 60 * 60 * 24));
@@ -891,27 +877,13 @@
         const projectedFinal = Math.round(totalSales + (currentDailyPace * daysToEvent));
         
         // ============ REVENUE CALCULATIONS ============
-        // RTW 2026 Budget from Entry Assumptions:
-        // Early Early Bird: 100 @ £25 = £2,500
-        // Early Bird: 750 @ £25 = £18,750  
-        // General: 2,750 @ £29.17 = £80,208
-        // Late: 400 @ £33.33 = £13,333
-        // Total: 4,000 tickets = £114,792 revenue target
-        
-        const revenueTarget = 114792; // £114,792 budget target
-        
-        // Pricing
-        const earlyEarlyBirdPrice = 25;
+        const revenueTarget = 114792;
         const earlyBirdPrice = 25;
         const generalPrice = 29.17;
-        const latePrice = 33.33;
         
-        // Actual revenue calculation:
-        // Non-corp startlist (557): 70 early bird @ £25 + 487 general @ £29.17
-        // Corporate (all 152): £4,790 (already paid)
-        const nonCorpStartlist = startlistTotal - corpOnStartlist; // 557
+        const nonCorpStartlist = startlistTotal - corpOnStartlist;
         const earlyBirdSold = 70;
-        const generalNonCorpSold = nonCorpStartlist - earlyBirdSold; // 487
+        const generalNonCorpSold = nonCorpStartlist - earlyBirdSold;
         const corpRevenue = 4790;
         
         const revenueCurrent = (earlyBirdSold * earlyBirdPrice) + 
@@ -920,24 +892,7 @@
         
         const revenueRemaining = revenueTarget - revenueCurrent;
         const revRequiredDaily = revenueRemaining / daysToEvent;
-        
-        // For pace calculation, use blended rate based on where we are in sales cycle
-        const avgPriceForPace = totalSales <= 850 ? earlyBirdPrice : 
-                                totalSales <= 3600 ? generalPrice : latePrice;
-        const revCurrentPace = currentDailyPace * avgPriceForPace;
-        
-        // Project final revenue based on ticket tiers
-        const projectedTickets = projectedFinal;
-        const projEarlyEarly = Math.min(projectedTickets, 100);
-        const projEarlyBird = Math.min(Math.max(0, projectedTickets - 100), 750);
-        const projGeneral = Math.min(Math.max(0, projectedTickets - 850), 2750);
-        const projLate = Math.max(0, projectedTickets - 3600);
-        const revProjected = Math.round(
-            (projEarlyEarly * earlyEarlyBirdPrice) +
-            (projEarlyBird * earlyBirdPrice) +
-            (projGeneral * generalPrice) +
-            (projLate * latePrice)
-        );
+        const revCurrentPace = currentDailyPace * generalPrice;
         
         // ============ UPDATE STATS ============
         document.getElementById('totalTickets').textContent = totalSales.toLocaleString();
@@ -949,171 +904,66 @@
         document.getElementById('weeklyRequired').textContent = weeklyRequired.toLocaleString();
         document.getElementById('projectedFinal').textContent = projectedFinal.toLocaleString();
         
-        // Update revenue stats
         document.getElementById('revRunRate').textContent = '£' + Math.round(revRequiredDaily).toLocaleString();
-        document.getElementById('revCurrent').textContent = '£' + revenueCurrent.toLocaleString();
+        document.getElementById('revCurrent').textContent = '£' + Math.round(revenueCurrent).toLocaleString();
         document.getElementById('revCurrentPace').textContent = '£' + Math.round(revCurrentPace).toLocaleString();
-        document.getElementById('revProjected').textContent = '£' + revProjected.toLocaleString();
+        document.getElementById('revProjected').textContent = '£' + Math.round(projectedFinal * generalPrice).toLocaleString();
         
         const progressPct = ((totalSales / target) * 100).toFixed(1);
         document.getElementById('progressPct').textContent = progressPct + '%';
         document.getElementById('progressBar').style.width = progressPct + '%';
         
-        // ============ BUILD WEEKLY DATA ============
-        function getWeekStart(date) {
-            const d = new Date(date);
-            const day = d.getDay();
-            const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Monday
-            return new Date(d.setDate(diff));
-        }
-        
-        function formatDate(date) {
-            return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-        }
-        
-        // Generate all weeks from launch to event
-        const weeks = [];
-        let currentWeekStart = getWeekStart(launchDate);
-        let weekNum = 1;
-        
-        while (currentWeekStart < eventDate) {
-            const weekEnd = new Date(currentWeekStart);
-            weekEnd.setDate(weekEnd.getDate() + 6);
-            
-            weeks.push({
-                num: weekNum,
-                start: new Date(currentWeekStart),
-                end: weekEnd > eventDate ? eventDate : weekEnd,
-                label: `W${weekNum}`,
-                dateRange: `${formatDate(currentWeekStart)} - ${formatDate(weekEnd > eventDate ? eventDate : weekEnd)}`
-            });
-            
-            currentWeekStart.setDate(currentWeekStart.getDate() + 7);
-            weekNum++;
-        }
-        
-        // Calculate sales per week
-        let cumulativeWithEarlyBird = earlyBirdTotal; // Start with early bird
-        
-        weeks.forEach(week => {
-            let weeklySales = 0;
-            
-            Object.entries(salesByDate).forEach(([dateStr, count]) => {
-                const saleDate = new Date(dateStr);
-                if (saleDate >= week.start && saleDate <= week.end) {
-                    weeklySales += count;
-                }
-            });
-            
-            week.sales = weeklySales;
-            cumulativeWithEarlyBird += weeklySales;
-            week.cumulative = cumulativeWithEarlyBird;
-            
-            // Determine status
-            if (week.end < today) {
-                week.status = 'complete';
-            } else if (week.start <= today && week.end >= today) {
-                week.status = 'current';
-            } else {
-                week.status = 'future';
-            }
-        });
-        
-        // Calculate target pace per week (linear)
-        const ticketsPerWeek = (target - earlyBirdTotal) / weeks.length;
-        weeks.forEach((week, i) => {
-            week.targetCumulative = Math.round(earlyBirdTotal + (ticketsPerWeek * (i + 1)));
-        });
-        
-        // ============ BUILD RTW 2025 WEEKLY DATA ============
-        function getWeekStart2025(date) {
-            const d = new Date(date);
-            const day = d.getDay();
-            const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-            return new Date(d.setDate(diff));
-        }
-        
-        const weeks2025 = [];
-        let weekStart2025 = getWeekStart2025(rtw2025.launchDate);
-        let weekNum2025 = 1;
-        
-        while (weekStart2025 < rtw2025.eventDate) {
-            const weekEnd2025 = new Date(weekStart2025);
-            weekEnd2025.setDate(weekEnd2025.getDate() + 6);
-            
-            weeks2025.push({
-                num: weekNum2025,
-                start: new Date(weekStart2025),
-                end: weekEnd2025 > rtw2025.eventDate ? rtw2025.eventDate : weekEnd2025
-            });
-            
-            weekStart2025.setDate(weekStart2025.getDate() + 7);
-            weekNum2025++;
-        }
-        
-        // Calculate 2025 cumulative by week
-        let cumulative2025 = 0;
-        weeks2025.forEach(week => {
-            let weeklySales = 0;
-            Object.entries(rtw2025.salesByDate).forEach(([dateStr, count]) => {
-                const saleDate = new Date(dateStr);
-                if (saleDate >= week.start && saleDate <= week.end) {
-                    weeklySales += count;
-                }
-            });
-            cumulative2025 += weeklySales;
-            week.cumulative = cumulative2025;
-        });
-        
-        // ============ CHART ============
+        // ============ CHART - WEEKS TO EVENT (Like-for-Like) ============
         const ctx = document.getElementById('mainChart').getContext('2d');
         
-        // Prepare chart data
-        const labels = ['Launch', ...weeks.map(w => w.label)];
-        const actualData = [earlyBirdTotal];
-        const targetData = [earlyBirdTotal];
-        const projectedData = [null];
-        const rtw2025Data = [0]; // 2025 started from 0
+        // X-axis: Weeks to Event - 33 on left (launch), 0 on right (event day)
+        // Lines will naturally go UP from left to right as tickets accumulate
+        const weeksToEvent = ['33', '32', '31', '30', '28', '24', '20', '16', '12', '8', '4', '0'];
         
-        let lastActual = earlyBirdTotal;
-        weeks.forEach((week, i) => {
-            if (week.status === 'complete' || week.status === 'current') {
-                actualData.push(week.cumulative);
-                lastActual = week.cumulative;
-            } else {
-                actualData.push(null);
-            }
-            targetData.push(week.targetCumulative);
-            
-            // Add 2025 data for same week number
-            if (weeks2025[i]) {
-                rtw2025Data.push(weeks2025[i].cumulative);
-            } else {
-                rtw2025Data.push(rtw2025.finalTotal); // After 2025 ended, show final
-            }
-        });
+        // RTW 2026 data mapped to weeks-to-event (left to right = progress toward event)
+        const actual2026 = [
+            earlyBirdTotal + corpUnallocated,  // 33 weeks out (206)
+            473,   // 32 weeks out
+            636,   // 31 weeks out  
+            totalSales,  // 30 weeks out (740 current)
+            null, null, null, null, null, null, null, null
+        ];
         
-        // Build projection from current point
-        const currentWeekIndex = weeks.findIndex(w => w.status === 'current');
-        weeks.forEach((week, i) => {
-            if (i < currentWeekIndex) {
-                projectedData.push(null);
-            } else if (i === currentWeekIndex) {
-                projectedData.push(totalSales);
-            } else {
-                const weeksFromNow = i - currentWeekIndex;
-                projectedData.push(Math.round(totalSales + (currentDailyPace * 7 * weeksFromNow)));
-            }
-        });
+        // 2026 projected from current point
+        const projected2026 = [
+            null, null, null, 
+            totalSales,
+            Math.round(totalSales + currentDailyPace * 14),
+            Math.round(totalSales + currentDailyPace * 42),
+            Math.round(totalSales + currentDailyPace * 70),
+            Math.round(totalSales + currentDailyPace * 98),
+            Math.round(totalSales + currentDailyPace * 126),
+            Math.round(totalSales + currentDailyPace * 154),
+            Math.round(totalSales + currentDailyPace * 182),
+            Math.round(totalSales + currentDailyPace * daysToEvent)
+        ];
+        
+        // Target pace (linear from early bird to 4000)
+        const target2026 = [206, 321, 436, 552, 782, 1243, 1704, 2165, 2626, 3087, 3548, 4000];
+        
+        // RTW 2025 - ONLY appears from ~12 weeks out (their launch was 15 weeks before event)
+        const actual2025 = [
+            null, null, null, null,  // 33-28 weeks: 2025 hadn't launched
+            null, null, null, null,  // 24-16 weeks: 2025 hadn't launched
+            308,   // 12 weeks out
+            962,   // 8 weeks out
+            1854,  // 4 weeks out
+            rtw2025.finalTotal  // Event day: 2369
+        ];
         
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: labels,
+                labels: weeksToEvent,
                 datasets: [
                     {
                         label: 'RTW 2026 Actual',
-                        data: actualData,
+                        data: actual2026,
                         borderColor: '#00ffd1',
                         backgroundColor: 'rgba(0, 255, 209, 0.15)',
                         borderWidth: 3,
@@ -1125,18 +975,18 @@
                     },
                     {
                         label: 'RTW 2025 Actual',
-                        data: rtw2025Data,
+                        data: actual2025,
                         borderColor: '#9966ff',
                         backgroundColor: 'transparent',
                         borderWidth: 2,
                         tension: 0.3,
-                        pointRadius: 3,
+                        pointRadius: 4,
                         pointBackgroundColor: '#9966ff',
                         pointHoverRadius: 6
                     },
                     {
                         label: 'Target Pace (4,000)',
-                        data: targetData,
+                        data: target2026,
                         borderColor: '#ffd700',
                         backgroundColor: 'transparent',
                         borderWidth: 2,
@@ -1147,7 +997,7 @@
                     },
                     {
                         label: 'RTW 2026 Projected',
-                        data: projectedData,
+                        data: projected2026,
                         borderColor: '#ff006b',
                         backgroundColor: 'transparent',
                         borderWidth: 2,
@@ -1163,10 +1013,16 @@
                 maintainAspectRatio: false,
                 scales: {
                     x: {
+                        title: {
+                            display: true,
+                            text: '← Weeks to Event',
+                            color: '#9090a0',
+                            font: { size: 12 }
+                        },
                         ticks: { 
                             color: '#606070',
-                            maxRotation: 45,
-                            font: { size: 10 }
+                            maxRotation: 0,
+                            font: { size: 11 }
                         },
                         grid: { color: '#2a2a38' }
                     },
@@ -1189,7 +1045,11 @@
                         borderColor: '#2a2a38',
                         borderWidth: 1,
                         callbacks: {
+                            title: function(context) {
+                                return context[0].label + ' weeks to event';
+                            },
                             label: function(context) {
+                                if (context.parsed.y === null) return null;
                                 return context.dataset.label + ': ' + context.parsed.y.toLocaleString() + ' tickets';
                             }
                         }
@@ -1203,9 +1063,69 @@
         });
         
         // ============ WEEKLY TABLE ============
+        function getWeekStart(date) {
+            const d = new Date(date);
+            const day = d.getDay();
+            const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+            return new Date(d.setDate(diff));
+        }
+        
+        function formatDate(date) {
+            return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+        }
+        
+        const weeks = [];
+        let currentWeekStart = getWeekStart(launchDate);
+        let weekNum = 1;
+        
+        while (currentWeekStart < eventDate) {
+            const weekEnd = new Date(currentWeekStart);
+            weekEnd.setDate(weekEnd.getDate() + 6);
+            
+            weeks.push({
+                num: weekNum,
+                start: new Date(currentWeekStart),
+                end: weekEnd > eventDate ? eventDate : weekEnd,
+                label: `W${weekNum}`,
+                dateRange: `${formatDate(currentWeekStart)} - ${formatDate(weekEnd > eventDate ? eventDate : weekEnd)}`
+            });
+            
+            currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+            weekNum++;
+        }
+        
+        let cumulativeWithEarlyBird = earlyBirdTotal;
+        
+        weeks.forEach(week => {
+            let weeklySales = 0;
+            
+            Object.entries(salesByDate).forEach(([dateStr, count]) => {
+                const saleDate = new Date(dateStr);
+                if (saleDate >= week.start && saleDate <= week.end) {
+                    weeklySales += count;
+                }
+            });
+            
+            week.sales = weeklySales;
+            cumulativeWithEarlyBird += weeklySales;
+            week.cumulative = cumulativeWithEarlyBird;
+            
+            if (week.end < today) {
+                week.status = 'complete';
+            } else if (week.start <= today && week.end >= today) {
+                week.status = 'current';
+            } else {
+                week.status = 'future';
+            }
+        });
+        
+        const ticketsPerWeek = (target - earlyBirdTotal) / weeks.length;
+        weeks.forEach((week, i) => {
+            week.targetCumulative = Math.round(earlyBirdTotal + (ticketsPerWeek * (i + 1)));
+        });
+        
         const tableBody = document.getElementById('weeklyTable');
         
-        // Add early bird row
         const earlyBirdRow = document.createElement('tr');
         earlyBirdRow.innerHTML = `
             <td><span class="status-dot complete"></span>Pre-Launch</td>
@@ -1217,7 +1137,6 @@
         `;
         tableBody.appendChild(earlyBirdRow);
         
-        // Add week rows (show first 8 weeks + current)
         const weeksToShow = weeks.filter(w => w.status !== 'future').concat(
             weeks.filter(w => w.status === 'future').slice(0, 4)
         );
@@ -1242,7 +1161,6 @@
             tableBody.appendChild(row);
         });
         
-        // Add final target row
         const finalRow = document.createElement('tr');
         finalRow.style.borderTop = '2px solid var(--border)';
         finalRow.innerHTML = `
