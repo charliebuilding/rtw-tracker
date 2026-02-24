@@ -643,8 +643,21 @@
                 <div class="legend-item"><div class="legend-dot pink"></div> RTW 2026 Projected</div>
             </div>
             <p style="text-align: center; color: var(--text-muted); font-size: 0.75rem; margin-top: 0.75rem;">
-                2025 line only appears from 12 weeks out — they hadn't launched yet when 2026 already has 861 tickets
+                2025 line only appears from 12 weeks out — they hadn't launched yet when 2026 already has 953 tickets
             </p>
+        </div>
+
+        <!-- Week-on-Week Sales Chart -->
+        <div class="chart-section">
+            <h3 class="chart-title">Week-on-Week Sales</h3>
+            <p class="chart-subtitle">Weekly ticket sales (Mon-Sun) | Target: 110/week | Current week partial</p>
+            <div class="chart-container" style="height: 300px;">
+                <canvas id="wowChart"></canvas>
+            </div>
+            <div class="legend">
+                <div class="legend-item"><div class="legend-dot cyan"></div> Weekly Sales</div>
+                <div class="legend-item"><div class="legend-dot yellow"></div> Weekly Target (110)</div>
+            </div>
         </div>
 
         <!-- Run Rate Cards - Side by Side -->
@@ -900,8 +913,8 @@
         const daysAfterSpike = daysSinceLaunch - 2; // 27
         
         // Current pace (all bookings, excl spike)
-        const currentDailyPace = sustainableTotal / daysAfterSpike; // 19.3
-        const requiredDailyRate = ticketsRemaining / daysToEvent; // 15.7
+        const currentDailyPace = sustainableTotal / daysAfterSpike; // 17.5
+        const requiredDailyRate = ticketsRemaining / daysToEvent; // 15.9
         const weeklyRequired = Math.ceil(requiredDailyRate * 7); // 110
         const projectedFinal = Math.round(totalSales + (currentDailyPace * daysToEvent)); // 4720
         
@@ -959,17 +972,17 @@
             null, null, null, null, null, null, null
         ];
         
-        // 2026 projected from current point (28 weeks out) - pace 19.3/day including all bookings
+        // 2026 projected from current point (27 weeks out) - pace 17.5/day including all bookings
         const projected2026 = [
             null, null, null, null,
             totalSales,
-            Math.round(totalSales + 19.3 * 28),   // 24 weeks
-            Math.round(totalSales + 19.3 * 56),   // 20 weeks
-            Math.round(totalSales + 19.3 * 84),   // 16 weeks
-            Math.round(totalSales + 19.3 * 112),  // 12 weeks
-            Math.round(totalSales + 19.3 * 140),  // 8 weeks
-            Math.round(totalSales + 19.3 * 168),  // 4 weeks
-            Math.round(totalSales + 19.3 * daysToEvent)  // Event day (~4,720)
+            Math.round(totalSales + 17.5 * 28),   // 24 weeks
+            Math.round(totalSales + 17.5 * 56),   // 20 weeks
+            Math.round(totalSales + 17.5 * 84),   // 16 weeks
+            Math.round(totalSales + 17.5 * 112),  // 12 weeks
+            Math.round(totalSales + 17.5 * 140),  // 8 weeks
+            Math.round(totalSales + 17.5 * 168),  // 4 weeks
+            Math.round(totalSales + 17.5 * daysToEvent)  // Event day (~4,316)
         ];
         
         // Target pace (linear from early bird to 4000)
@@ -1087,6 +1100,108 @@
                 interaction: {
                     intersect: false,
                     mode: 'index'
+                }
+            }
+        });
+        
+        // ============ WEEK-ON-WEEK CHART ============
+        const wowCtx = document.getElementById('wowChart').getContext('2d');
+        
+        // Calculate weekly sales from salesByDate
+        const weeklySalesData = {};
+        Object.entries(salesByDate).forEach(([dateStr, count]) => {
+            const date = new Date(dateStr);
+            const dayOfWeek = date.getDay();
+            const monday = new Date(date);
+            monday.setDate(date.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+            const weekKey = monday.toISOString().split('T')[0];
+            weeklySalesData[weekKey] = (weeklySalesData[weekKey] || 0) + count;
+        });
+        
+        const sortedWeeks = Object.keys(weeklySalesData).sort();
+        const weekLabels = sortedWeeks.map(w => {
+            const d = new Date(w);
+            return 'WC ' + d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+        });
+        const weekValues = sortedWeeks.map(w => weeklySalesData[w]);
+        const weeklyTarget = Array(sortedWeeks.length).fill(110);
+        
+        // Mark last week as partial if it's the current week
+        const lastWeekPartial = sortedWeeks[sortedWeeks.length - 1] >= today.toISOString().split('T')[0].slice(0, 8);
+        
+        new Chart(wowCtx, {
+            type: 'bar',
+            data: {
+                labels: weekLabels,
+                datasets: [
+                    {
+                        label: 'Weekly Sales',
+                        data: weekValues,
+                        backgroundColor: weekValues.map((v, i) => {
+                            if (i === 0) return 'rgba(255, 215, 0, 0.7)'; // Launch week gold
+                            if (i === weekValues.length - 1) return 'rgba(0, 255, 209, 0.4)'; // Current week lighter
+                            return v >= 110 ? 'rgba(74, 222, 128, 0.7)' : 'rgba(0, 255, 209, 0.7)';
+                        }),
+                        borderColor: weekValues.map((v, i) => {
+                            if (i === 0) return '#FFD700';
+                            if (i === weekValues.length - 1) return '#00FFD1';
+                            return v >= 110 ? '#4ade80' : '#00FFD1';
+                        }),
+                        borderWidth: 2,
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Weekly Target (110)',
+                        data: weeklyTarget,
+                        type: 'line',
+                        borderColor: '#FFFF00',
+                        borderWidth: 2,
+                        borderDash: [6, 4],
+                        pointRadius: 0,
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        ticks: { 
+                            color: '#606070',
+                            maxRotation: 45,
+                            font: { size: 10 }
+                        },
+                        grid: { color: '#2a2a38' }
+                    },
+                    y: {
+                        min: 0,
+                        max: 350,
+                        ticks: { 
+                            color: '#606070',
+                            stepSize: 50
+                        },
+                        grid: { color: '#2a2a38' }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1a1a24',
+                        titleColor: '#f0f0f5',
+                        bodyColor: '#9090a0',
+                        borderColor: '#2a2a38',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                if (context.dataset.label === 'Weekly Target (110)') {
+                                    return 'Target: 110/week';
+                                }
+                                const isPartial = context.dataIndex === weekValues.length - 1;
+                                return context.parsed.y + ' tickets' + (isPartial ? ' (partial week)' : '');
+                            }
+                        }
+                    }
                 }
             }
         });
