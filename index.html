@@ -573,7 +573,7 @@
             </div>
             <div class="header-right">
                 <div class="live-badge">LIVE TRACKING</div>
-                <p class="last-updated">Last Updated: 16 Feb 2026</p>
+                <p class="last-updated">Last Updated: 24 Feb 2026</p>
             </div>
         </header>
 
@@ -581,8 +581,8 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-label">Total Tickets Sold</div>
-                <div class="stat-value" id="totalTickets">861</div>
-                <div class="stat-change">712 startlist + 149 unallocated corp</div>
+                <div class="stat-value" id="totalTickets">953</div>
+                <div class="stat-change">804 startlist + 149 unallocated corp</div>
             </div>
             <div class="stat-card" style="border-color: #9966ff;">
                 <div class="stat-label">Corporate Tickets</div>
@@ -596,17 +596,17 @@
             </div>
             <div class="stat-card pink">
                 <div class="stat-label">Tickets Remaining</div>
-                <div class="stat-value" id="ticketsRemaining">3,139</div>
+                <div class="stat-value" id="ticketsRemaining">3,047</div>
                 <div class="stat-change">to reach target</div>
             </div>
             <div class="stat-card green">
                 <div class="stat-label">Days Since Launch</div>
-                <div class="stat-value" id="daysSinceLaunch">29</div>
+                <div class="stat-value" id="daysSinceLaunch">37</div>
                 <div class="stat-change">WC 18 Jan 2026</div>
             </div>
             <div class="stat-card orange">
                 <div class="stat-label">Days to Event</div>
-                <div class="stat-value" id="daysToEvent">200</div>
+                <div class="stat-value" id="daysToEvent">192</div>
                 <div class="stat-change">4 Sep 2026</div>
             </div>
         </div>
@@ -615,10 +615,10 @@
         <div class="progress-section">
             <div class="progress-header">
                 <h2 class="progress-title">Progress to 4,000</h2>
-                <div class="progress-pct" id="progressPct">21.5%</div>
+                <div class="progress-pct" id="progressPct">23.8%</div>
             </div>
             <div class="progress-bar-container">
-                <div class="progress-bar actual" id="progressBar" style="width: 21.5%"></div>
+                <div class="progress-bar actual" id="progressBar" style="width: 23.8%"></div>
             </div>
             <div class="progress-markers">
                 <span>0</span>
@@ -652,19 +652,19 @@
             <!-- Ticket Run Rate Card -->
             <div class="run-rate-section" style="margin-bottom: 0;">
                 <div class="run-rate-label">Required Daily Run Rate</div>
-                <div class="run-rate-value" id="runRate">15.7</div>
+                <div class="run-rate-value" id="runRate">15.9</div>
                 <div class="run-rate-unit">tickets per day to hit 4,000</div>
                 <div class="run-rate-detail" style="flex-direction: column; gap: 1rem;">
                     <div class="run-rate-item">
-                        <div class="run-rate-item-value" id="currentPace">19.3</div>
+                        <div class="run-rate-item-value" id="currentPace">17.5</div>
                         <div class="run-rate-item-label">Current Pace (excl. launch spike)</div>
                     </div>
                     <div class="run-rate-item">
-                        <div class="run-rate-item-value" id="weeklyRequired">110</div>
+                        <div class="run-rate-item-value" id="weeklyRequired">111</div>
                         <div class="run-rate-item-label">Weekly Target</div>
                     </div>
                     <div class="run-rate-item">
-                        <div class="run-rate-item-value" id="projectedFinal" style="color: #4ade80;">4,720</div>
+                        <div class="run-rate-item-value" id="projectedFinal" style="color: #4ade80;">4,316</div>
                         <div class="run-rate-item-label">Projected at Current Pace</div>
                     </div>
                 </div>
@@ -818,13 +818,13 @@
         // ============ CONFIG ============
         const launchDate = new Date('2026-01-18');
         const eventDate = new Date('2026-09-04');
-        const today = new Date('2026-02-16');
+        const today = new Date('2026-02-24');
         const target = 4000;
         
         // Early bird sales (Sep-Oct 2025)
         const earlyBirdTotal = 73;
         
-        // 2026 Sales by Date (from launch onwards)
+        // 2026 Sales by Date (from launch onwards) - Updated 24 Feb
         const salesByDate = {
             '2026-01-20': 27,
             '2026-01-21': 240,
@@ -852,7 +852,15 @@
             '2026-02-13': 22,
             '2026-02-14': 10,
             '2026-02-15': 10,
-            '2026-02-16': 2
+            '2026-02-16': 11,
+            '2026-02-17': 20,
+            '2026-02-18': 7,
+            '2026-02-19': 4,
+            '2026-02-20': 9,
+            '2026-02-21': 4,
+            '2026-02-22': 19,
+            '2026-02-23': 15,
+            '2026-02-24': 5
         };
         
         // RTW 2025 Data
