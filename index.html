@@ -573,21 +573,21 @@
             </div>
             <div class="header-right">
                 <div class="live-badge">LIVE TRACKING</div>
-                <p class="last-updated">Last Updated: 24 Feb 2026</p>
+                <p class="last-updated" id="statLastUpdated">Last Updated: —</p>
             </div>
         </header>
 
-        <!-- Stats Grid -->
+        <!-- Stats Grid - All values populated by JavaScript -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-label">Total Tickets Sold</div>
-                <div class="stat-value" id="totalTickets">953</div>
-                <div class="stat-change">804 startlist + 149 unallocated corp</div>
+                <div class="stat-value" id="statTotalTickets">—</div>
+                <div class="stat-change" id="statTotalDetail">—</div>
             </div>
             <div class="stat-card" style="border-color: #9966ff;">
                 <div class="stat-label">Corporate Tickets</div>
-                <div class="stat-value" style="color: #9966ff;">172</div>
-                <div class="stat-change">7 companies | £5,540</div>
+                <div class="stat-value" id="statCorpTickets" style="color: #9966ff;">—</div>
+                <div class="stat-change" id="statCorpDetail">—</div>
             </div>
             <div class="stat-card yellow">
                 <div class="stat-label">Target</div>
@@ -596,17 +596,17 @@
             </div>
             <div class="stat-card pink">
                 <div class="stat-label">Tickets Remaining</div>
-                <div class="stat-value" id="ticketsRemaining">3,047</div>
+                <div class="stat-value" id="statRemaining">—</div>
                 <div class="stat-change">to reach target</div>
             </div>
             <div class="stat-card green">
                 <div class="stat-label">Days Since Launch</div>
-                <div class="stat-value" id="daysSinceLaunch">37</div>
+                <div class="stat-value" id="statDaysSinceLaunch">—</div>
                 <div class="stat-change">WC 18 Jan 2026</div>
             </div>
             <div class="stat-card orange">
                 <div class="stat-label">Days to Event</div>
-                <div class="stat-value" id="daysToEvent">192</div>
+                <div class="stat-value" id="statDaysToEvent">—</div>
                 <div class="stat-change">4 Sep 2026</div>
             </div>
         </div>
@@ -615,10 +615,10 @@
         <div class="progress-section">
             <div class="progress-header">
                 <h2 class="progress-title">Progress to 4,000</h2>
-                <div class="progress-pct" id="progressPct">23.8%</div>
+                <div class="progress-pct" id="statProgressPct">—</div>
             </div>
             <div class="progress-bar-container">
-                <div class="progress-bar actual" id="progressBar" style="width: 23.8%"></div>
+                <div class="progress-bar actual" id="statProgressBar" style="width: 0%"></div>
             </div>
             <div class="progress-markers">
                 <span>0</span>
@@ -642,8 +642,8 @@
                 <div class="legend-item"><div class="legend-dot yellow"></div> Target Pace (4,000)</div>
                 <div class="legend-item"><div class="legend-dot pink"></div> RTW 2026 Projected</div>
             </div>
-            <p style="text-align: center; color: var(--text-muted); font-size: 0.75rem; margin-top: 0.75rem;">
-                2025 line only appears from 12 weeks out — they hadn't launched yet when 2026 already has 953 tickets
+            <p style="text-align: center; color: var(--text-muted); font-size: 0.75rem; margin-top: 0.75rem;" id="statChartNote">
+                —
             </p>
         </div>
 
@@ -665,20 +665,20 @@
             <!-- Ticket Run Rate Card -->
             <div class="run-rate-section" style="margin-bottom: 0;">
                 <div class="run-rate-label">Required Daily Run Rate</div>
-                <div class="run-rate-value" id="runRate">15.9</div>
+                <div class="run-rate-value" id="statRequiredPace">—</div>
                 <div class="run-rate-unit">tickets per day to hit 4,000</div>
                 <div class="run-rate-detail" style="flex-direction: column; gap: 1rem;">
                     <div class="run-rate-item">
-                        <div class="run-rate-item-value" id="currentPace">17.5</div>
-                        <div class="run-rate-item-label">Current Pace (excl. launch spike)</div>
+                        <div class="run-rate-item-value" id="statOrganicPace">—</div>
+                        <div class="run-rate-item-label">Organic Pace (excl. spikes)</div>
                     </div>
                     <div class="run-rate-item">
-                        <div class="run-rate-item-value" id="weeklyRequired">111</div>
+                        <div class="run-rate-item-value" id="statWeeklyTarget">—</div>
                         <div class="run-rate-item-label">Weekly Target</div>
                     </div>
                     <div class="run-rate-item">
-                        <div class="run-rate-item-value" id="projectedFinal" style="color: #4ade80;">4,316</div>
-                        <div class="run-rate-item-label">Projected at Current Pace</div>
+                        <div class="run-rate-item-value" id="statProjectedFinal" style="color: #4ade80;">—</div>
+                        <div class="run-rate-item-label">Projected (Organic Pace)</div>
                     </div>
                 </div>
             </div>
@@ -705,26 +705,11 @@
             </div>
         </div>
 
-        <!-- Corporate Tickets Section -->
+        <!-- Corporate Tickets Section - Dynamically populated -->
         <div class="table-section" style="background: linear-gradient(135deg, rgba(153, 102, 255, 0.1), rgba(153, 102, 255, 0.05)); border-color: rgba(153, 102, 255, 0.3);">
             <h3 class="chart-title" style="margin-bottom: 1rem; color: #9966ff;">Corporate Tickets</h3>
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
-                <div style="text-align: center;">
-                    <div style="font-size: 2rem; font-weight: 700; color: #9966ff;">172</div>
-                    <div style="font-size: 0.75rem; color: #9090a0; text-transform: uppercase;">Tickets Sold</div>
-                </div>
-                <div style="text-align: center;">
-                    <div style="font-size: 2rem; font-weight: 700; color: #4ade80;">23</div>
-                    <div style="font-size: 0.75rem; color: #9090a0; text-transform: uppercase;">On Startlist (13%)</div>
-                </div>
-                <div style="text-align: center;">
-                    <div style="font-size: 2rem; font-weight: 700; color: #ff006b;">149</div>
-                    <div style="font-size: 0.75rem; color: #9090a0; text-transform: uppercase;">Pending (87%)</div>
-                </div>
-                <div style="text-align: center;">
-                    <div style="font-size: 2rem; font-weight: 700; color: #9966ff;">£5,540</div>
-                    <div style="font-size: 0.75rem; color: #9090a0; text-transform: uppercase;">Revenue</div>
-                </div>
+            <div id="corpStatsGrid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+                <!-- Populated by JavaScript -->
             </div>
             <div class="table-container">
                 <table>
@@ -733,71 +718,15 @@
                             <th>Company</th>
                             <th class="right">Tickets</th>
                             <th class="right">Paid</th>
-                            <th class="right">Allocated</th>
-                            <th class="right">Pending</th>
+                            <th class="right">Date</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>Brookfield Asset Management</td>
-                            <td class="right" style="color: #9966ff; font-weight: 600;">100</td>
-                            <td class="right">£3,050</td>
-                            <td class="right" style="color: #4ade80;">0 (0%)</td>
-                            <td class="right" style="color: #ff006b;">100 (100%)</td>
-                        </tr>
-                        <tr style="background: rgba(0, 255, 209, 0.05);">
-                            <td>Antares <span style="color: #00ffd1; font-size: 0.7rem;">NEW</span></td>
-                            <td class="right" style="color: #9966ff; font-weight: 600;">20</td>
-                            <td class="right">£750</td>
-                            <td class="right" style="color: #4ade80;">0 (0%)</td>
-                            <td class="right" style="color: #ff006b;">20 (100%)</td>
-                        </tr>
-                        <tr>
-                            <td>Vantage</td>
-                            <td class="right" style="color: #9966ff; font-weight: 600;">20</td>
-                            <td class="right">£610</td>
-                            <td class="right" style="color: #4ade80;">0 (0%)</td>
-                            <td class="right" style="color: #ff006b;">20 (100%)</td>
-                        </tr>
-                        <tr>
-                            <td>Caplin Systems Ltd</td>
-                            <td class="right" style="color: #9966ff; font-weight: 600;">12</td>
-                            <td class="right">£450</td>
-                            <td class="right" style="color: #4ade80;">0 (0%)</td>
-                            <td class="right" style="color: #ff006b;">12 (100%)</td>
-                        </tr>
-                        <tr>
-                            <td>Momentum Global Investment Management</td>
-                            <td class="right" style="color: #9966ff; font-weight: 600;">10</td>
-                            <td class="right">£375</td>
-                            <td class="right" style="color: #4ade80;">0 (0%)</td>
-                            <td class="right" style="color: #ff006b;">10 (100%)</td>
-                        </tr>
-                        <tr>
-                            <td>Supagold Ltd</td>
-                            <td class="right" style="color: #9966ff; font-weight: 600;">10</td>
-                            <td class="right">£305</td>
-                            <td class="right" style="color: #4ade80;">10 (100%)</td>
-                            <td class="right" style="color: #6b7280;">0 (0%)</td>
-                        </tr>
-                        <tr>
-                            <td>Other Corporate (on startlist)</td>
-                            <td class="right" style="color: #9966ff; font-weight: 600;">—</td>
-                            <td class="right">—</td>
-                            <td class="right" style="color: #4ade80;">13</td>
-                            <td class="right" style="color: #6b7280;">—</td>
-                        </tr>
-                        <tr style="border-top: 2px solid rgba(153, 102, 255, 0.3); font-weight: 700;">
-                            <td>TOTAL</td>
-                            <td class="right" style="color: #9966ff;">172</td>
-                            <td class="right" style="color: #9966ff;">£5,540</td>
-                            <td class="right" style="color: #4ade80;">23 (13%)</td>
-                            <td class="right" style="color: #ff006b;">149 (87%)</td>
-                        </tr>
+                    <tbody id="corpTableBody">
+                        <!-- Populated by JavaScript -->
                     </tbody>
                 </table>
             </div>
-            <p style="font-size: 0.75rem; color: #ff006b; margin-top: 1rem; font-weight: 500;">⚠️ 87% of corporate tickets (149) awaiting participant details from companies</p>
+            <p id="corpWarning" style="font-size: 0.75rem; color: #ff006b; margin-top: 1rem; font-weight: 500;"></p>
         </div>
 
         <!-- Weekly Table -->
@@ -828,16 +757,25 @@
     </div>
 
     <script>
-        // ============ CONFIG ============
-        const launchDate = new Date('2026-01-18');
-        const eventDate = new Date('2026-09-04');
-        const today = new Date('2026-02-24');
-        const target = 4000;
+        // ╔════════════════════════════════════════════════════════════════════════════╗
+        // ║  🔄 DATA SECTION - UPDATE THIS WHEN NEW CSV FILES ARE PROVIDED            ║
+        // ╚════════════════════════════════════════════════════════════════════════════╝
         
-        // Early bird sales (Sep-Oct 2025)
-        const earlyBirdTotal = 73;
+        // === KEY DATES ===
+        const CONFIG = {
+            launchDate: '2026-01-18',
+            eventDate: '2026-09-04',
+            dataDate: '2026-03-02',  // 📅 UPDATE THIS: Date of latest CSV export
+            target: 4000,
+            earlyBirdTotal: 73,      // Pre-launch sales (before 18 Jan)
+            
+            // Spike dates to EXCLUDE from organic pace calculation
+            launchSpikeDates: ['2026-01-20', '2026-01-21'],  // Launch spike
+            promoSpikeDates: ['2026-02-25', '2026-02-26', '2026-02-27'],  // £19.9 promo spike
+        };
         
-        // 2026 Sales by Date (from launch onwards) - Updated 24 Feb
+        // === SALES BY DATE (from STARTLIST CSV - Booking Date column) ===
+        // 📅 UPDATE THIS: Paste new sales data from analysis
         const salesByDate = {
             '2026-01-20': 27,
             '2026-01-21': 240,
@@ -873,88 +811,193 @@
             '2026-02-21': 4,
             '2026-02-22': 19,
             '2026-02-23': 15,
-            '2026-02-24': 5
+            '2026-02-24': 5,
+            '2026-02-25': 38,
+            '2026-02-26': 122,
+            '2026-02-27': 42,
+            '2026-02-28': 3,
+            '2026-03-01': 6
         };
         
-        // RTW 2025 Data
+        // === CORPORATE BOOKINGS (from APPLICATION CSV) ===
+        // 📅 UPDATE THIS: Add new corporate bookings, set isNew: true for recent ones
+        const corporateBookings = [
+            { company: 'Brookfield Asset Management', tickets: 100, revenue: 3050, date: '2026-01-26', onStartlist: 0 },
+            { company: 'Antares', tickets: 20, revenue: 750, date: '2026-02-11', onStartlist: 0 },
+            { company: 'Vantage', tickets: 20, revenue: 610, date: '2026-01-26', onStartlist: 0 },
+            { company: 'Caplin Systems Ltd', tickets: 12, revenue: 450, date: '2026-01-29', onStartlist: 0 },
+            { company: 'Pullmann Global', tickets: 10, revenue: 360, date: '2026-02-25', onStartlist: 0, isNew: true },
+            { company: 'Momentum Global Investment Management', tickets: 10, revenue: 375, date: '2026-01-30', onStartlist: 0 },
+            { company: 'Supagold Ltd', tickets: 10, revenue: 305, date: '2026-01-26', onStartlist: 10 },
+            { company: 'HSBC', tickets: 4, revenue: 150, date: '2026-02-27', onStartlist: 0, isNew: true },
+        ];
+        
+        // === RTW 2025 HISTORICAL DATA (for comparison chart) ===
         const rtw2025 = {
             launchDate: new Date('2025-05-23'),
             eventDate: new Date('2025-09-04'),
             finalTotal: 2369,
             leadTimeWeeks: 15
         };
+
+        // ╔════════════════════════════════════════════════════════════════════════════╗
+        // ║  🔢 CALCULATIONS - Everything below is AUTOMATIC                          ║
+        // ╚════════════════════════════════════════════════════════════════════════════╝
         
-        // Calculate totals
+        // Parse dates
+        const launchDate = new Date(CONFIG.launchDate);
+        const eventDate = new Date(CONFIG.eventDate);
+        const today = new Date(CONFIG.dataDate);
+        const target = CONFIG.target;
+        const earlyBirdTotal = CONFIG.earlyBirdTotal;
+        
+        // Corporate calculations
+        const corpTicketsSold = corporateBookings.reduce((sum, c) => sum + c.tickets, 0);
+        const corpRevenue = corporateBookings.reduce((sum, c) => sum + c.revenue, 0);
+        const corpOnStartlist = corporateBookings.reduce((sum, c) => sum + c.onStartlist, 0);
+        const corpUnallocated = corpTicketsSold - corpOnStartlist;
+        const corpCompanyCount = new Set(corporateBookings.map(c => c.company)).size;
+        
+        // Startlist calculations
         const postLaunchSales = Object.values(salesByDate).reduce((a, b) => a + b, 0);
-        const startlistTotal = earlyBirdTotal + postLaunchSales; // 712
+        const startlistTotal = earlyBirdTotal + postLaunchSales;
         
-        // Corporate tickets: 172 sold (including new Antares 20), 23 on startlist
-        const corpTicketsSold = 172;
-        const corpOnStartlist = 23;
-        const corpUnallocated = corpTicketsSold - corpOnStartlist; // 149
-        const corpRevenue = 5540; // Updated with Antares £750
+        // Total sold = startlist + unallocated corporate
+        const totalSales = startlistTotal + corpUnallocated;
+        const ticketsRemaining = target - totalSales;
         
-        // True total = startlist + unallocated corp
-        const totalSales = startlistTotal + corpUnallocated; // 861
-        const ticketsRemaining = target - totalSales; // 3139
-        
-        // Calculate days
+        // Days calculations
         const daysSinceLaunch = Math.floor((today - launchDate) / (1000 * 60 * 60 * 24));
         const daysToEvent = Math.floor((eventDate - today) / (1000 * 60 * 60 * 24));
         const totalDays = Math.floor((eventDate - launchDate) / (1000 * 60 * 60 * 24));
         
-        // ============ RUN RATE (All Bookings Including Corporate) ============
-        // Post-launch total = total - early bird = 861 - 73 = 788
-        const postLaunchTotal = totalSales - earlyBirdTotal;
+        // Organic pace (excluding ALL spikes)
+        const allSpikeDates = [...CONFIG.launchSpikeDates, ...CONFIG.promoSpikeDates];
+        const spikeSales = allSpikeDates.reduce((sum, d) => sum + (salesByDate[d] || 0), 0);
+        const organicSales = postLaunchSales - spikeSales + corpUnallocated;
+        const organicDays = daysSinceLaunch - allSpikeDates.filter(d => salesByDate[d]).length;
+        const organicDailyPace = organicSales / organicDays;
         
-        // Exclude launch spike (first 2 days = 267)
-        const launchSpike = 267;
-        const sustainableTotal = postLaunchTotal - launchSpike; // 521
-        const daysAfterSpike = daysSinceLaunch - 2; // 27
+        // Required pace
+        const requiredDailyRate = ticketsRemaining / daysToEvent;
+        const weeklyRequired = Math.ceil(requiredDailyRate * 7);
         
-        // Current pace (all bookings, excl spike)
-        const currentDailyPace = sustainableTotal / daysAfterSpike; // 17.5
-        const requiredDailyRate = ticketsRemaining / daysToEvent; // 15.9
-        const weeklyRequired = Math.ceil(requiredDailyRate * 7); // 110
-        const projectedFinal = Math.round(totalSales + (currentDailyPace * daysToEvent)); // 4720
+        // Projected final (using organic pace)
+        const projectedFinal = Math.round(totalSales + (organicDailyPace * daysToEvent));
         
-        // ============ REVENUE CALCULATIONS ============
+        // Progress percentage
+        const progressPct = ((totalSales / target) * 100).toFixed(1);
+        
+        // Revenue calculations
         const revenueTarget = 114792;
         const earlyBirdPrice = 25;
         const generalPrice = 29.17;
-        
-        // Revenue calculation
         const earlyBirdTicketsSold = 70;
-        const generalTickets = startlistTotal - earlyBirdTicketsSold - corpOnStartlist; // 619
-        const revenueCurrent = (earlyBirdTicketsSold * earlyBirdPrice) + 
-                              (generalTickets * generalPrice) + 
-                              corpRevenue; // £25,346
-        
+        const generalTickets = startlistTotal - earlyBirdTicketsSold - corpOnStartlist;
+        const revenueCurrent = (earlyBirdTicketsSold * earlyBirdPrice) + (generalTickets * generalPrice) + corpRevenue;
         const revenueRemaining = revenueTarget - revenueCurrent;
-        const revRequiredDaily = revenueRemaining / daysToEvent; // £447
-        const revCurrentPace = currentDailyPace * generalPrice; // £563
-        const revProjected = revenueCurrent + (revCurrentPace * daysToEvent); // £137,921
+        const revRequiredDaily = revenueRemaining / daysToEvent;
+        const revCurrentPace = organicDailyPace * generalPrice;
+        const revProjected = revenueCurrent + (revCurrentPace * daysToEvent);
+
+        // ╔════════════════════════════════════════════════════════════════════════════╗
+        // ║  📊 UPDATE ALL STATS IN HTML                                              ║
+        // ╚════════════════════════════════════════════════════════════════════════════╝
         
-        // ============ UPDATE STATS ============
-        document.getElementById('totalTickets').textContent = totalSales.toLocaleString();
-        document.getElementById('ticketsRemaining').textContent = ticketsRemaining.toLocaleString();
-        document.getElementById('daysSinceLaunch').textContent = daysSinceLaunch;
-        document.getElementById('daysToEvent').textContent = daysToEvent;
-        document.getElementById('runRate').textContent = requiredDailyRate.toFixed(1);
-        document.getElementById('currentPace').textContent = currentDailyPace.toFixed(1);
-        document.getElementById('weeklyRequired').textContent = weeklyRequired.toLocaleString();
-        document.getElementById('projectedFinal').textContent = projectedFinal.toLocaleString();
+        // Format helpers
+        const fmt = n => n.toLocaleString();
+        const fmtCurrency = n => '£' + Math.round(n).toLocaleString();
+        const fmtDate = d => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
         
-        document.getElementById('revRunRate').textContent = '£' + Math.round(revRequiredDaily).toLocaleString();
-        document.getElementById('revCurrent').textContent = '£' + Math.round(revenueCurrent).toLocaleString();
-        document.getElementById('revCurrentPace').textContent = '£' + Math.round(revCurrentPace).toLocaleString();
-        document.getElementById('revProjected').textContent = '£' + Math.round(revProjected).toLocaleString();
+        // Header
+        document.getElementById('statLastUpdated').textContent = 'Last Updated: ' + fmtDate(today);
         
-        const progressPct = ((totalSales / target) * 100).toFixed(1);
-        document.getElementById('progressPct').textContent = progressPct + '%';
-        document.getElementById('progressBar').style.width = progressPct + '%';
+        // Stats grid
+        document.getElementById('statTotalTickets').textContent = fmt(totalSales);
+        document.getElementById('statTotalDetail').textContent = `${fmt(startlistTotal)} startlist + ${fmt(corpUnallocated)} unallocated corp`;
+        document.getElementById('statCorpTickets').textContent = fmt(corpTicketsSold);
+        document.getElementById('statCorpDetail').textContent = `${corpCompanyCount} companies | ${fmtCurrency(corpRevenue)}`;
+        document.getElementById('statRemaining').textContent = fmt(ticketsRemaining);
+        document.getElementById('statDaysSinceLaunch').textContent = daysSinceLaunch;
+        document.getElementById('statDaysToEvent').textContent = daysToEvent;
         
-        // ============ CHART - WEEKS TO EVENT (Like-for-Like) ============
+        // Progress bar
+        document.getElementById('statProgressPct').textContent = progressPct + '%';
+        document.getElementById('statProgressBar').style.width = progressPct + '%';
+        
+        // Run rates
+        document.getElementById('statRequiredPace').textContent = requiredDailyRate.toFixed(1);
+        document.getElementById('statOrganicPace').textContent = organicDailyPace.toFixed(1);
+        document.getElementById('statWeeklyTarget').textContent = fmt(weeklyRequired);
+        document.getElementById('statProjectedFinal').textContent = fmt(projectedFinal);
+        document.getElementById('statProjectedFinal').style.color = projectedFinal >= target ? '#4ade80' : '#ff006b';
+        
+        // Revenue
+        document.getElementById('revRunRate').textContent = fmtCurrency(revRequiredDaily);
+        document.getElementById('revCurrent').textContent = fmtCurrency(revenueCurrent);
+        document.getElementById('revCurrentPace').textContent = fmtCurrency(revCurrentPace);
+        document.getElementById('revProjected').textContent = fmtCurrency(revProjected);
+        
+        // Chart note
+        document.getElementById('statChartNote').textContent = `2025 line only appears from 12 weeks out — they hadn't launched yet when 2026 already has ${fmt(totalSales)} tickets`;
+
+        // ╔════════════════════════════════════════════════════════════════════════════╗
+        // ║  📋 CORPORATE TABLE                                                       ║
+        // ╚════════════════════════════════════════════════════════════════════════════╝
+        
+        // Corporate stats grid
+        document.getElementById('corpStatsGrid').innerHTML = `
+            <div style="text-align: center;">
+                <div style="font-size: 2rem; font-weight: 700; color: #9966ff;">${fmt(corpTicketsSold)}</div>
+                <div style="font-size: 0.75rem; color: #9090a0; text-transform: uppercase;">Tickets Sold</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 2rem; font-weight: 700; color: #4ade80;">${corpOnStartlist}</div>
+                <div style="font-size: 0.75rem; color: #9090a0; text-transform: uppercase;">On Startlist</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 2rem; font-weight: 700; color: #ff006b;">${corpUnallocated}</div>
+                <div style="font-size: 0.75rem; color: #9090a0; text-transform: uppercase;">Pending</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 2rem; font-weight: 700; color: #9966ff;">${fmtCurrency(corpRevenue)}</div>
+                <div style="font-size: 0.75rem; color: #9090a0; text-transform: uppercase;">Revenue</div>
+            </div>
+        `;
+        
+        // Corporate table body
+        const corpTableBody = document.getElementById('corpTableBody');
+        corporateBookings.sort((a, b) => b.tickets - a.tickets).forEach(c => {
+            const row = document.createElement('tr');
+            if (c.isNew) row.style.background = 'rgba(0, 255, 209, 0.05)';
+            row.innerHTML = `
+                <td>${c.company}${c.isNew ? ' <span style="color: #00ffd1; font-size: 0.7rem;">NEW</span>' : ''}</td>
+                <td class="right" style="color: #9966ff; font-weight: 600;">${c.tickets}</td>
+                <td class="right">${fmtCurrency(c.revenue)}</td>
+                <td class="right" style="color: #9090a0;">${c.date.slice(5)}</td>
+            `;
+            corpTableBody.appendChild(row);
+        });
+        
+        // Total row
+        const totalRow = document.createElement('tr');
+        totalRow.style.borderTop = '2px solid rgba(153, 102, 255, 0.3)';
+        totalRow.style.fontWeight = '700';
+        totalRow.innerHTML = `
+            <td>TOTAL (${corpCompanyCount} companies)</td>
+            <td class="right" style="color: #9966ff;">${fmt(corpTicketsSold)}</td>
+            <td class="right" style="color: #9966ff;">${fmtCurrency(corpRevenue)}</td>
+            <td class="right">—</td>
+        `;
+        corpTableBody.appendChild(totalRow);
+        
+        // Corporate warning
+        const pendingPct = Math.round((corpUnallocated / corpTicketsSold) * 100);
+        document.getElementById('corpWarning').textContent = `⚠️ ${pendingPct}% of corporate tickets (${corpUnallocated}) awaiting participant details from companies`;
+
+        // ╔════════════════════════════════════════════════════════════════════════════╗
+        // ║  📈 CHARTS                                                                 ║
+        // ╚════════════════════════════════════════════════════════════════════════════╝
         const ctx = document.getElementById('mainChart').getContext('2d');
         
         // X-axis: Weeks to Event - 33 on left (launch), 0 on right (event day)
@@ -972,17 +1015,17 @@
             null, null, null, null, null, null, null
         ];
         
-        // 2026 projected from current point (27 weeks out) - pace 17.5/day including all bookings
+        // 2026 projected from current point - using ORGANIC pace (excl all spikes)
         const projected2026 = [
             null, null, null, null,
             totalSales,
-            Math.round(totalSales + 17.5 * 28),   // 24 weeks
-            Math.round(totalSales + 17.5 * 56),   // 20 weeks
-            Math.round(totalSales + 17.5 * 84),   // 16 weeks
-            Math.round(totalSales + 17.5 * 112),  // 12 weeks
-            Math.round(totalSales + 17.5 * 140),  // 8 weeks
-            Math.round(totalSales + 17.5 * 168),  // 4 weeks
-            Math.round(totalSales + 17.5 * daysToEvent)  // Event day (~4,316)
+            Math.round(totalSales + organicDailyPace * 28),   // 24 weeks
+            Math.round(totalSales + organicDailyPace * 56),   // 20 weeks
+            Math.round(totalSales + organicDailyPace * 84),   // 16 weeks
+            Math.round(totalSales + organicDailyPace * 112),  // 12 weeks
+            Math.round(totalSales + organicDailyPace * 140),  // 8 weeks
+            Math.round(totalSales + organicDailyPace * 168),  // 4 weeks
+            Math.round(totalSales + organicDailyPace * daysToEvent)  // Event day
         ];
         
         // Target pace (linear from early bird to 4000)
