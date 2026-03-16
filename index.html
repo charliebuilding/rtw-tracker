@@ -23,22 +23,18 @@
             --accent-green: #00ff88;
             --accent-orange: #ff8c00;
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; }
-
         body {
             font-family: 'Space Grotesk', sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
         }
-
         .container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 2rem;
         }
-
         /* Header */
         .header {
             display: flex;
@@ -48,7 +44,6 @@
             padding-bottom: 1.5rem;
             border-bottom: 1px solid var(--border);
         }
-
         .header-left h1 {
             font-size: 2.25rem;
             font-weight: 700;
@@ -59,17 +54,14 @@
             background-clip: text;
             margin-bottom: 0.5rem;
         }
-
         .header-left .subtitle {
             font-family: 'DM Mono', monospace;
             color: var(--text-secondary);
             font-size: 0.875rem;
         }
-
         .header-right {
             text-align: right;
         }
-
         .live-badge {
             display: inline-flex;
             align-items: center;
@@ -83,7 +75,6 @@
             color: var(--accent-green);
             margin-bottom: 0.5rem;
         }
-
         .live-badge::before {
             content: '';
             width: 8px;
@@ -92,18 +83,15 @@
             border-radius: 50%;
             animation: pulse 2s infinite;
         }
-
         @keyframes pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.5; transform: scale(0.8); }
         }
-
         .last-updated {
             font-family: 'DM Mono', monospace;
             font-size: 0.75rem;
             color: var(--text-muted);
         }
-
         /* Stats Grid */
         .stats-grid {
             display: grid;
@@ -111,7 +99,6 @@
             gap: 1rem;
             margin-bottom: 2rem;
         }
-
         .stat-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -120,7 +107,6 @@
             position: relative;
             overflow: hidden;
         }
-
         .stat-card::before {
             content: '';
             position: absolute;
@@ -130,12 +116,10 @@
             height: 3px;
             background: var(--accent-cyan);
         }
-
         .stat-card.pink::before { background: var(--accent-pink); }
         .stat-card.yellow::before { background: var(--accent-yellow); }
         .stat-card.green::before { background: var(--accent-green); }
         .stat-card.orange::before { background: var(--accent-orange); }
-
         .stat-label {
             font-family: 'DM Mono', monospace;
             font-size: 0.7rem;
@@ -144,7 +128,6 @@
             letter-spacing: 0.1em;
             margin-bottom: 0.5rem;
         }
-
         .stat-value {
             font-size: 2rem;
             font-weight: 700;
@@ -152,18 +135,15 @@
             line-height: 1;
             margin-bottom: 0.25rem;
         }
-
         .stat-card.pink .stat-value { color: var(--accent-pink); }
         .stat-card.yellow .stat-value { color: var(--accent-yellow); }
         .stat-card.green .stat-value { color: var(--accent-green); }
         .stat-card.orange .stat-value { color: var(--accent-orange); }
-
         .stat-change {
             font-family: 'DM Mono', monospace;
             font-size: 0.75rem;
             color: var(--text-secondary);
         }
-
         /* Progress Section */
         .progress-section {
             background: var(--bg-card);
@@ -172,26 +152,22 @@
             padding: 1.5rem;
             margin-bottom: 2rem;
         }
-
         .progress-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1rem;
         }
-
         .progress-title {
             font-size: 1.125rem;
             font-weight: 600;
         }
-
         .progress-pct {
             font-family: 'DM Mono', monospace;
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--accent-cyan);
         }
-
         .progress-bar-container {
             background: var(--bg-secondary);
             border-radius: 8px;
@@ -199,26 +175,22 @@
             position: relative;
             overflow: hidden;
         }
-
         .progress-bar {
             height: 100%;
             border-radius: 8px;
             transition: width 1s ease-out;
             position: absolute;
         }
-
         .progress-bar.actual {
             background: linear-gradient(90deg, var(--accent-cyan), rgba(0, 255, 209, 0.7));
             z-index: 2;
         }
-
         .progress-bar.target-line {
             width: 100%;
             background: transparent;
             border-right: 3px solid var(--accent-yellow);
             z-index: 1;
         }
-
         .progress-markers {
             display: flex;
             justify-content: space-between;
@@ -227,7 +199,6 @@
             font-size: 0.7rem;
             color: var(--text-muted);
         }
-
         /* Chart Section */
         .chart-section {
             background: var(--bg-card);
@@ -236,25 +207,21 @@
             padding: 1.5rem;
             margin-bottom: 2rem;
         }
-
         .chart-title {
             font-size: 1.125rem;
             font-weight: 600;
             margin-bottom: 0.25rem;
         }
-
         .chart-subtitle {
             font-family: 'DM Mono', monospace;
             font-size: 0.75rem;
             color: var(--text-muted);
             margin-bottom: 1.5rem;
         }
-
         .chart-container {
             height: 400px;
             position: relative;
         }
-
         /* Legend */
         .legend {
             display: flex;
@@ -264,7 +231,6 @@
             padding-top: 1rem;
             border-top: 1px solid var(--border);
         }
-
         .legend-item {
             display: flex;
             align-items: center;
@@ -273,17 +239,14 @@
             font-size: 0.8rem;
             color: var(--text-secondary);
         }
-
         .legend-dot {
             width: 14px;
             height: 14px;
             border-radius: 3px;
         }
-
         .legend-dot.cyan { background: var(--accent-cyan); }
         .legend-dot.yellow { background: var(--accent-yellow); }
         .legend-dot.pink { background: var(--accent-pink); border: 2px dashed var(--accent-pink); background: transparent; }
-
         /* Run Rate Card */
         .run-rate-section {
             background: linear-gradient(135deg, rgba(255, 0, 107, 0.1), rgba(0, 255, 209, 0.1));
@@ -293,7 +256,6 @@
             margin-bottom: 2rem;
             text-align: center;
         }
-
         .run-rate-label {
             font-family: 'DM Mono', monospace;
             font-size: 0.875rem;
@@ -302,7 +264,6 @@
             letter-spacing: 0.1em;
             margin-bottom: 0.5rem;
         }
-
         .run-rate-value {
             font-size: 4rem;
             font-weight: 700;
@@ -310,37 +271,31 @@
             line-height: 1;
             margin-bottom: 0.5rem;
         }
-
         .run-rate-unit {
             font-family: 'DM Mono', monospace;
             font-size: 1rem;
             color: var(--text-secondary);
         }
-
         .run-rate-detail {
             margin-top: 1.5rem;
             display: flex;
             justify-content: center;
             gap: 3rem;
         }
-
         .run-rate-item {
             text-align: center;
         }
-
         .run-rate-item-value {
             font-size: 1.5rem;
             font-weight: 600;
             color: var(--text-primary);
         }
-
         .run-rate-item-label {
             font-family: 'DM Mono', monospace;
             font-size: 0.7rem;
             color: var(--text-muted);
             text-transform: uppercase;
         }
-
         /* Run Rate Grid (side by side cards) */
         .run-rate-grid {
             display: grid;
@@ -348,7 +303,6 @@
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
-
         /* Weekly Table */
         .table-section {
             background: var(--bg-card);
@@ -357,17 +311,14 @@
             padding: 1.5rem;
             margin-bottom: 2rem;
         }
-
         .table-container {
             overflow-x: auto;
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.875rem;
         }
-
         th {
             text-align: left;
             padding: 0.75rem 1rem;
@@ -379,29 +330,22 @@
             letter-spacing: 0.1em;
             border-bottom: 1px solid var(--border);
         }
-
         th.right { text-align: right; }
-
         td {
             padding: 0.75rem 1rem;
             border-bottom: 1px solid var(--border);
             font-family: 'DM Mono', monospace;
         }
-
         td.right { text-align: right; }
-
         tr:hover td {
             background: var(--bg-hover);
         }
-
         tr.current-week td {
             background: rgba(0, 255, 209, 0.1);
         }
-
         tr.future td {
             color: var(--text-muted);
         }
-
         .status-dot {
             display: inline-block;
             width: 8px;
@@ -409,35 +353,29 @@
             border-radius: 50%;
             margin-right: 0.5rem;
         }
-
         .status-dot.complete { background: var(--accent-green); }
         .status-dot.current { background: var(--accent-cyan); animation: pulse 2s infinite; }
         .status-dot.future { background: var(--text-muted); }
-
         /* Footer */
         .footer {
             text-align: center;
             padding-top: 1.5rem;
             border-top: 1px solid var(--border);
         }
-
         .footer p {
             font-family: 'DM Mono', monospace;
             font-size: 0.75rem;
             color: var(--text-muted);
         }
-
         /* iOS Text Rendering Fixes */
         html {
             -webkit-text-size-adjust: 100%;
             text-size-adjust: 100%;
         }
-
         /* Responsive - Tablet */
         @media (max-width: 1000px) {
             .stats-grid { grid-template-columns: repeat(3, 1fr); }
         }
-
         /* Responsive - Mobile */
         @media (max-width: 768px) {
             .container { padding: 1rem; }
@@ -457,7 +395,6 @@
                 grid-template-columns: 1fr;
             }
         }
-
         /* Responsive - Small Mobile (iPhone SE, etc) */
         @media (max-width: 480px) {
             .container { padding: 0.75rem; }
@@ -520,7 +457,6 @@
             
             .footer p { font-size: 0.65rem; }
         }
-
         /* iOS Safari specific fixes */
         @supports (-webkit-touch-callout: none) {
             body {
@@ -543,14 +479,12 @@
                 min-height: 44px;
             }
         }
-
         /* Dark mode preference (matches our dark theme) */
         @media (prefers-color-scheme: dark) {
             :root {
                 color-scheme: dark;
             }
         }
-
         /* Reduce motion for accessibility */
         @media (prefers-reduced-motion: reduce) {
             .live-badge::before,
@@ -576,7 +510,6 @@
                 <p class="last-updated" id="statLastUpdated">Last Updated: —</p>
             </div>
         </header>
-
         <!-- Stats Grid - All values populated by JavaScript -->
         <div class="stats-grid">
             <div class="stat-card">
@@ -610,7 +543,6 @@
                 <div class="stat-change">4 Sep 2026</div>
             </div>
         </div>
-
         <!-- Progress Bar -->
         <div class="progress-section">
             <div class="progress-header">
@@ -628,7 +560,6 @@
                 <span>4,000</span>
             </div>
         </div>
-
         <!-- Main Chart -->
         <div class="chart-section">
             <h3 class="chart-title">Sales Progress: Weeks to Event (Like-for-Like)</h3>
@@ -646,7 +577,6 @@
                 —
             </p>
         </div>
-
         <!-- Week-on-Week Sales Chart -->
         <div class="chart-section">
             <h3 class="chart-title">Week-on-Week Sales</h3>
@@ -659,7 +589,6 @@
                 <div class="legend-item"><div class="legend-dot yellow"></div> Weekly Target (110)</div>
             </div>
         </div>
-
         <!-- Run Rate Cards - Side by Side -->
         <div class="run-rate-grid">
             <!-- Ticket Run Rate Card -->
@@ -682,7 +611,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- Revenue Run Rate Card -->
             <div class="run-rate-section" style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(0, 255, 209, 0.1)); border-color: var(--accent-yellow); margin-bottom: 0;">
                 <div class="run-rate-label">Required Daily Revenue</div>
@@ -704,7 +632,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Corporate Tickets Section - Dynamically populated -->
         <div class="table-section" style="background: linear-gradient(135deg, rgba(153, 102, 255, 0.1), rgba(153, 102, 255, 0.05)); border-color: rgba(153, 102, 255, 0.3);">
             <h3 class="chart-title" style="margin-bottom: 1rem; color: #9966ff;">Corporate Tickets</h3>
@@ -728,7 +655,6 @@
             </div>
             <p id="corpWarning" style="font-size: 0.75rem; color: #ff006b; margin-top: 1rem; font-weight: 500;"></p>
         </div>
-
         <!-- Weekly Table -->
         <div class="table-section">
             <h3 class="chart-title" style="margin-bottom: 1rem;">Weekly Breakdown</h3>
@@ -748,14 +674,12 @@
                 </table>
             </div>
         </div>
-
         <!-- Footer -->
         <footer class="footer">
             <p>Friday Night Lights | Run The Wharf 2026</p>
             <p style="margin-top: 0.5rem;">Event Date: 4 September 2026 | Launch: 18 January 2026</p>
         </footer>
     </div>
-
     <script>
         // ╔════════════════════════════════════════════════════════════════════════════╗
         // ║  🔄 DATA SECTION - UPDATE THIS WHEN NEW CSV FILES ARE PROVIDED            ║
@@ -765,7 +689,7 @@
         const CONFIG = {
             launchDate: '2026-01-18',
             eventDate: '2026-09-04',
-            dataDate: '2026-03-02',  // 📅 UPDATE THIS: Date of latest CSV export
+            dataDate: '2026-03-15',  // 📅 UPDATE THIS: Date of latest CSV export
             target: 4000,
             earlyBirdTotal: 73,      // Pre-launch sales (before 18 Jan)
             
@@ -816,7 +740,21 @@
             '2026-02-26': 122,
             '2026-02-27': 42,
             '2026-02-28': 3,
-            '2026-03-01': 6
+            '2026-03-01': 6,
+            '2026-03-02': 2,
+            '2026-03-03': 20,
+            '2026-03-04': 21,
+            '2026-03-05': 7,
+            '2026-03-06': 4,
+            '2026-03-07': 4,
+            '2026-03-08': 7,
+            '2026-03-09': 7,
+            '2026-03-10': 6,
+            '2026-03-11': 11,
+            '2026-03-12': 20,
+            '2026-03-13': 27,
+            '2026-03-14': 5,
+            '2026-03-15': 4,
         };
         
         // === CORPORATE BOOKINGS (from APPLICATION CSV) ===
@@ -824,12 +762,13 @@
         const corporateBookings = [
             { company: 'Brookfield Asset Management', tickets: 100, revenue: 3050, date: '2026-01-26', onStartlist: 0 },
             { company: 'Antares', tickets: 20, revenue: 750, date: '2026-02-11', onStartlist: 0 },
-            { company: 'Vantage', tickets: 20, revenue: 610, date: '2026-01-26', onStartlist: 0 },
-            { company: 'Caplin Systems Ltd', tickets: 12, revenue: 450, date: '2026-01-29', onStartlist: 0 },
-            { company: 'Pullmann Global', tickets: 10, revenue: 360, date: '2026-02-25', onStartlist: 0, isNew: true },
+            { company: 'Vantage', tickets: 20, revenue: 610, date: '2026-01-26', onStartlist: 13 },
+            { company: '10x Banking', tickets: 15, revenue: 563, date: '2026-03-02', onStartlist: 0, isNew: true },
+            { company: 'Caplin Systems Ltd', tickets: 12, revenue: 450, date: '2026-01-29', onStartlist: 8 },
+            { company: 'Pullmann Global', tickets: 10, revenue: 360, date: '2026-02-25', onStartlist: 0 },
             { company: 'Momentum Global Investment Management', tickets: 10, revenue: 375, date: '2026-01-30', onStartlist: 0 },
-            { company: 'Supagold Ltd', tickets: 10, revenue: 305, date: '2026-01-26', onStartlist: 10 },
-            { company: 'HSBC', tickets: 4, revenue: 150, date: '2026-02-27', onStartlist: 0, isNew: true },
+            { company: 'Supagold Ltd', tickets: 10, revenue: 305, date: '2026-01-26', onStartlist: 5 },
+            { company: 'HSBC', tickets: 4, revenue: 150, date: '2026-02-27', onStartlist: 4 },
         ];
         
         // === RTW 2025 HISTORICAL DATA (for comparison chart) ===
@@ -839,7 +778,6 @@
             finalTotal: 2369,
             leadTimeWeeks: 15
         };
-
         // ╔════════════════════════════════════════════════════════════════════════════╗
         // ║  🔢 CALCULATIONS - Everything below is AUTOMATIC                          ║
         // ╚════════════════════════════════════════════════════════════════════════════╝
@@ -899,7 +837,6 @@
         const revRequiredDaily = revenueRemaining / daysToEvent;
         const revCurrentPace = organicDailyPace * generalPrice;
         const revProjected = revenueCurrent + (revCurrentPace * daysToEvent);
-
         // ╔════════════════════════════════════════════════════════════════════════════╗
         // ║  📊 UPDATE ALL STATS IN HTML                                              ║
         // ╚════════════════════════════════════════════════════════════════════════════╝
@@ -940,7 +877,6 @@
         
         // Chart note
         document.getElementById('statChartNote').textContent = `2025 line only appears from 12 weeks out — they hadn't launched yet when 2026 already has ${fmt(totalSales)} tickets`;
-
         // ╔════════════════════════════════════════════════════════════════════════════╗
         // ║  📋 CORPORATE TABLE                                                       ║
         // ╚════════════════════════════════════════════════════════════════════════════╝
@@ -994,7 +930,6 @@
         // Corporate warning
         const pendingPct = Math.round((corpUnallocated / corpTicketsSold) * 100);
         document.getElementById('corpWarning').textContent = `⚠️ ${pendingPct}% of corporate tickets (${corpUnallocated}) awaiting participant details from companies`;
-
         // ╔════════════════════════════════════════════════════════════════════════════╗
         // ║  📈 CHARTS                                                                 ║
         // ╚════════════════════════════════════════════════════════════════════════════╝
@@ -1281,23 +1216,15 @@
             weekNum++;
         }
         
-        // Corporate bookings by week (when they were signed up)
-        // Pre-existing corps (152 tickets) assumed at launch
-        // Antares (20 tickets) signed 11 Feb = WC 10 Feb (week 4)
-        const corpByWeek = {
-            1: 129,  // Pre-existing unallocated at launch (152 - 23 on startlist = 129, minus Antares 20 = 109... wait)
-            // Actually: at launch we had 152 corp, 23 on startlist = 129 unallocated
-            // Antares 20 came in WC 10 Feb, so add 20 to that week
-        };
+        // Corporate bookings by week - calculated dynamically
+        // Pre-launch corps = booked before first salesByDate entry
+        const firstSalesDate = Object.keys(salesByDate).sort()[0];
+        const preLaunchCorps = corporateBookings.filter(c => c.date < firstSalesDate);
+        const postLaunchCorps = corporateBookings.filter(c => c.date >= firstSalesDate);
+        const preLaunchCorpUnallocated = preLaunchCorps.reduce((sum, c) => sum + c.tickets, 0) 
+            - preLaunchCorps.reduce((sum, c) => sum + c.onStartlist, 0);
         
-        // Start with early bird + initial corp unallocated (before Antares)
-        // Initial corp: 152 - 20 (Antares) = 132, minus 23 on startlist = 109 unallocated pre-Antares
-        // But actually Antares is NEW, so original was 152 total
-        // Let me recalculate: Original 152 corp (6 companies), then Antares adds 20 = 172 total
-        // At launch: 152 corp, 23 allocated = 129 unallocated
-        // WC 10 Feb: Antares adds 20 more = 149 unallocated total
-        
-        let cumulativeTotal = earlyBirdTotal + 129; // Start: 73 early bird + 129 corp unallocated (pre-Antares)
+        let cumulativeTotal = earlyBirdTotal + preLaunchCorpUnallocated;
         
         weeks.forEach((week, i) => {
             let weeklySales = 0;
@@ -1309,11 +1236,14 @@
                 }
             });
             
-            // Add Antares 20 tickets to WC 10 Feb (week 4)
+            // Add post-launch corporate tickets for this week (unallocated portion)
             let corpAddition = 0;
-            if (week.num === 4) {
-                corpAddition = 20; // Antares signed up this week
-            }
+            postLaunchCorps.forEach(c => {
+                const corpDate = new Date(c.date);
+                if (corpDate >= week.start && corpDate <= week.end) {
+                    corpAddition += (c.tickets - c.onStartlist);
+                }
+            });
             
             week.sales = weeklySales + corpAddition;
             cumulativeTotal += week.sales;
@@ -1336,12 +1266,12 @@
         const tableBody = document.getElementById('weeklyTable');
         
         // Pre-launch row shows early bird + initial corp unallocated
-        const preLaunchTotal = earlyBirdTotal + 129; // 73 + 129 = 202
+        const preLaunchTotal = earlyBirdTotal + preLaunchCorpUnallocated;
         const earlyBirdRow = document.createElement('tr');
         earlyBirdRow.innerHTML = `
             <td><span class="status-dot complete"></span>Pre-Launch</td>
             <td>Sep 2025 - Jan 2026</td>
-            <td class="right">${preLaunchTotal} <span style="color: var(--text-muted); font-size: 0.7rem;">(73 early bird + 129 corp)</span></td>
+            <td class="right">${preLaunchTotal} <span style="color: var(--text-muted); font-size: 0.7rem;">(${earlyBirdTotal} early bird + ${preLaunchCorpUnallocated} corp)</span></td>
             <td class="right" style="color: var(--accent-cyan); font-weight: 600;">${preLaunchTotal}</td>
             <td class="right">—</td>
             <td class="right">—</td>
