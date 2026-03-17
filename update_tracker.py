@@ -277,7 +277,7 @@ def git_commit_and_push(data_date):
     # Push if remote exists
     result = subprocess.run(["git", "remote", "get-url", "origin"], capture_output=True, text=True)
     if result.returncode == 0:
-        subprocess.run(["git", "push"], check=True)
+        subprocess.run(["git", "push", "-u", "origin", "main"], check=True)
         print("  Pushed to remote.")
     else:
         print("  No remote configured - skipping push.")
