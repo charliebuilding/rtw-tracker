@@ -955,21 +955,46 @@
             null, null, null, null, null, null, null
         ];
         
-        // 2026 projected from current point - using ORGANIC pace (excl all spikes)
+        // 2026 projected: organic pace until 12 weeks out, then 2025's sales distribution
+        // In 2025, from 12 weeks to event they sold 2,061 tickets:
+        //   12→8 wks: 654 (31.7%), 8→4 wks: 892 (43.3%), 4→0 wks: 515 (25.0%)
+        const proj12 = Math.round(totalSales + organicDailyPace * 112);
+        const remainingFrom12 = organicDailyPace * 84;  // 12 weeks = 84 days at organic pace
+        const proj8  = Math.round(proj12 + remainingFrom12 * 0.317);   // 31.7% sold 12→8
+        const proj4  = Math.round(proj8 + remainingFrom12 * 0.433);    // 43.3% sold 8→4
+        const proj0  = Math.round(proj4 + remainingFrom12 * 0.250);    // 25.0% sold 4→0
         const projected2026 = [
             null, null, null, null,
             totalSales,
             Math.round(totalSales + organicDailyPace * 28),   // 24 weeks
             Math.round(totalSales + organicDailyPace * 56),   // 20 weeks
             Math.round(totalSales + organicDailyPace * 84),   // 16 weeks
-            Math.round(totalSales + organicDailyPace * 112),  // 12 weeks
-            Math.round(totalSales + organicDailyPace * 140),  // 8 weeks
-            Math.round(totalSales + organicDailyPace * 168),  // 4 weeks
-            Math.round(totalSales + organicDailyPace * daysToEvent)  // Event day
+            proj12,   // 12 weeks - then apply 2025 distribution
+            proj8,    // 8 weeks
+            proj4,    // 4 weeks
+            proj0     // Event day
         ];
         
         // Target pace (linear from early bird to 4000)
         const target2026 = [202, 321, 436, 552, 782, 1243, 1704, 2165, 2626, 3087, 3548, 4000];
+
+        // Target pace to 5000 (stretch target)
+        const target5000 = [202, 393, 578, 763, 1100, 1763, 2425, 3088, 3475, 3950, 4475, 5000];
+
+        // 2025-trajectory projection: applies 2025's week-over-week growth ratios to 2026's projected position
+        // 2025 pattern: 308 (12wk) → 962 (8wk) → 1854 (4wk) → 2369 (0wk)
+        // Growth ratios: 3.12x (12→8), 1.93x (8→4), 1.28x (4→0)
+        const proj12wk = Math.round(totalSales + organicDailyPace * 112);  // projected at 12 weeks out
+        const proj8wk_2025curve = Math.round(proj12wk * (962 / 308));      // apply 2025 12→8 ratio
+        const proj4wk_2025curve = Math.round(proj8wk_2025curve * (1854 / 962));  // apply 2025 8→4 ratio
+        const proj0wk_2025curve = Math.round(proj4wk_2025curve * (2369 / 1854)); // apply 2025 4→0 ratio
+        const projected2025curve = [
+            null, null, null, null, null, null, null, null,
+            proj12wk,
+            proj8wk_2025curve,
+            proj4wk_2025curve,
+            proj0wk_2025curve
+        ];
         
         // RTW 2025 - ONLY appears from ~12 weeks out (their launch was 15 weeks before event)
         const actual2025 = [
@@ -1021,7 +1046,7 @@
                         pointHoverRadius: 4
                     },
                     {
-                        label: 'RTW 2026 Projected',
+                        label: 'RTW 2026 Projected (Organic)',
                         data: projected2026,
                         borderColor: '#ff006b',
                         backgroundColor: 'transparent',
@@ -1030,7 +1055,7 @@
                         tension: 0.3,
                         pointRadius: 0,
                         pointHoverRadius: 4
-                    }
+                    },
                 ]
             },
             options: {
@@ -1053,7 +1078,7 @@
                     },
                     y: {
                         min: 0,
-                        max: 4500,
+                        max: 5500,
                         ticks: { 
                             color: '#606070',
                             stepSize: 500
