@@ -689,7 +689,7 @@
         const CONFIG = {
             launchDate: '2026-01-18',
             eventDate: '2026-09-04',
-            dataDate: '2026-03-26',  // 📅 UPDATE THIS: Date of latest CSV export
+            dataDate: '2026-03-26T14:28',  // 📅 UPDATE THIS: Date/time of latest update
             target: 4000,
             earlyBirdTotal: 73,      // Pre-launch sales (before 18 Jan)
             
@@ -865,9 +865,10 @@
         const fmt = n => n.toLocaleString();
         const fmtCurrency = n => '£' + Math.round(n).toLocaleString();
         const fmtDate = d => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+        const fmtDateTime = d => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + ' at ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
         
         // Header
-        document.getElementById('statLastUpdated').textContent = 'Last Updated: ' + fmtDate(today);
+        document.getElementById('statLastUpdated').textContent = 'Last Updated: ' + fmtDateTime(today);
         
         // Stats grid
         document.getElementById('statTotalTickets').textContent = fmt(totalSales);

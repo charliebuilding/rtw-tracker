@@ -338,12 +338,14 @@ def main():
     print("\n3. Parsing APPLICATION...")
     corporate_bookings = parse_application(application_path)
 
-    # Determine data date (latest date in the sales data)
+    # Determine data date (latest date in the sales data) + current time
     all_dates = list(post_launch_sales.keys())
-    data_date = max(all_dates) if all_dates else date.today().isoformat()
+    latest_date = max(all_dates) if all_dates else date.today().isoformat()
+    now = datetime.now()
+    data_date = f"{latest_date}T{now.strftime('%H:%M')}"
 
     # Update HTML
-    print(f"\n4. Updating index.html (data date: {data_date})...")
+    print(f"\n4. Updating index.html (data date: {data_date}, updated: {now.strftime('%H:%M')})...")
     update_html(early_bird, post_launch_sales, corporate_bookings, data_date)
 
     # Git
