@@ -634,15 +634,15 @@
                         <div class="run-rate-item-label">Current Daily Pace</div>
                     </div>
                     <div class="run-rate-item">
-                        <div class="run-rate-item-value" id="revProjected" style="color: #4ade80;">£137,921</div>
-                        <div class="run-rate-item-label">Projected at Current Pace (ex-VAT)</div>
+                        <div class="run-rate-item-value" id="revProjected" style="color: rgba(255,255,255,0.7);">£114,859</div>
+                        <div class="run-rate-item-label" style="color: rgba(255,255,255,0.5);">Projected at Current Pace (ex-VAT)</div>
                     </div>
                     <div class="run-rate-item">
-                        <div class="run-rate-item-value" id="revProjectedVAT" style="color: rgba(255,255,255,0.5);">£27,584</div>
+                        <div class="run-rate-item-value" id="revProjectedVAT" style="color: rgba(255,255,255,0.5);">£22,972</div>
                         <div class="run-rate-item-label" style="color: rgba(255,255,255,0.5);">VAT (20%)</div>
                     </div>
                     <div class="run-rate-item">
-                        <div class="run-rate-item-value" id="revProjectedIncVAT" style="color: #4ade80;">£165,505</div>
+                        <div class="run-rate-item-value" id="revProjectedIncVAT" style="color: #4ade80;">£137,831</div>
                         <div class="run-rate-item-label">Projected at Current Pace (inc-VAT)</div>
                     </div>
                 </div>
@@ -894,9 +894,10 @@
         const revenueRemaining = revenueTarget - revenueCurrent;
         const revRequiredDaily = revenueRemaining / daysToEvent;
         const revCurrentPace = organicDailyPace * generalPrice;
-        const revProjected = revenueCurrent + (revCurrentPace * daysToEvent);
-        const revProjectedVAT = revProjected * 0.2;
-        const revProjectedIncVAT = revProjected * 1.2;
+        const revProjectedIncVAT = revenueCurrent + (revCurrentPace * daysToEvent); // inc-VAT gross
+        const revProjectedExVAT = revProjectedIncVAT / 1.2;
+        const revProjectedVAT = revProjectedIncVAT - revProjectedExVAT;
+        const revProjected = revProjectedExVAT; // alias used elsewhere
         // ╔════════════════════════════════════════════════════════════════════════════╗
         // ║  📊 UPDATE ALL STATS IN HTML                                              ║
         // ╚════════════════════════════════════════════════════════════════════════════╝
