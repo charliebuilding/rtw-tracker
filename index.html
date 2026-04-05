@@ -635,7 +635,15 @@
                     </div>
                     <div class="run-rate-item">
                         <div class="run-rate-item-value" id="revProjected" style="color: #4ade80;">£137,921</div>
-                        <div class="run-rate-item-label">Projected at Current Pace</div>
+                        <div class="run-rate-item-label">Projected at Current Pace (ex-VAT)</div>
+                    </div>
+                    <div class="run-rate-item">
+                        <div class="run-rate-item-value" id="revProjectedVAT" style="color: rgba(255,255,255,0.5);">£27,584</div>
+                        <div class="run-rate-item-label" style="color: rgba(255,255,255,0.5);">VAT (20%)</div>
+                    </div>
+                    <div class="run-rate-item">
+                        <div class="run-rate-item-value" id="revProjectedIncVAT" style="color: #4ade80;">£165,505</div>
+                        <div class="run-rate-item-label">Projected at Current Pace (inc-VAT)</div>
                     </div>
                 </div>
             </div>
@@ -887,6 +895,8 @@
         const revRequiredDaily = revenueRemaining / daysToEvent;
         const revCurrentPace = organicDailyPace * generalPrice;
         const revProjected = revenueCurrent + (revCurrentPace * daysToEvent);
+        const revProjectedVAT = revProjected * 0.2;
+        const revProjectedIncVAT = revProjected * 1.2;
         // ╔════════════════════════════════════════════════════════════════════════════╗
         // ║  📊 UPDATE ALL STATS IN HTML                                              ║
         // ╚════════════════════════════════════════════════════════════════════════════╝
@@ -927,6 +937,8 @@
         document.getElementById('revCurrentIncVAT').textContent = fmtCurrency(revenueCurrentIncVAT);
         document.getElementById('revCurrentPace').textContent = fmtCurrency(revCurrentPace);
         document.getElementById('revProjected').textContent = fmtCurrency(revProjected);
+        document.getElementById('revProjectedVAT').textContent = fmtCurrency(revProjectedVAT);
+        document.getElementById('revProjectedIncVAT').textContent = fmtCurrency(revProjectedIncVAT);
         
         // Chart note
         document.getElementById('statChartNote').textContent = `2025 line only appears from 12 weeks out — they hadn't launched yet when 2026 already has ${fmt(totalSales)} tickets`;
@@ -1126,8 +1138,8 @@
                     },
                     y: {
                         min: 0,
-                        max: 5500,
-                        ticks: { 
+                        suggestedMax: Math.ceil(Math.max(...projected2026.filter(v => v !== null)) / 500) * 500 + 500,
+                        ticks: {
                             color: '#606070',
                             stepSize: 500
                         },
@@ -1252,8 +1264,8 @@
                     },
                     y: {
                         min: 0,
-                        max: 350,
-                        ticks: { 
+                        suggestedMax: Math.ceil(Math.max(...weekValues, 110) / 50) * 50 + 50,
+                        ticks: {
                             color: '#606070',
                             stepSize: 50
                         },
