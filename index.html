@@ -1146,7 +1146,14 @@
         
         // ============ WEEK-ON-WEEK CHART ============
         const wowCtx = document.getElementById('wowChart').getContext('2d');
-        
+
+        // Pre-compute corporate split (used by WoW chart and Weekly Breakdown)
+        const firstSalesDate = Object.keys(salesByDate).sort()[0];
+        const preLaunchCorps = corporateBookings.filter(c => c.date < firstSalesDate);
+        const postLaunchCorps = corporateBookings.filter(c => c.date >= firstSalesDate);
+        const preLaunchCorpUnallocated = preLaunchCorps.reduce((sum, c) => sum + c.tickets, 0)
+            - preLaunchCorps.reduce((sum, c) => sum + c.onStartlist, 0);
+
         // Calculate weekly sales from salesByDate
         const weeklySalesData = {};
         Object.entries(salesByDate).forEach(([dateStr, count]) => {
@@ -1156,6 +1163,19 @@
             monday.setDate(date.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
             const weekKey = monday.toISOString().split('T')[0];
             weeklySalesData[weekKey] = (weeklySalesData[weekKey] || 0) + count;
+        });
+
+        // Add unallocated corporate tickets to their respective week
+        postLaunchCorps.forEach(c => {
+            const corpDate = new Date(c.date);
+            const dayOfWeek = corpDate.getDay();
+            const monday = new Date(corpDate);
+            monday.setDate(corpDate.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+            const weekKey = monday.toISOString().split('T')[0];
+            const unallocated = c.tickets - c.onStartlist;
+            if (unallocated > 0) {
+                weeklySalesData[weekKey] = (weeklySalesData[weekKey] || 0) + unallocated;
+            }
         });
         
         const sortedWeeks = Object.keys(weeklySalesData).sort();
@@ -1279,13 +1299,7 @@
         }
         
         // Corporate bookings by week - calculated dynamically
-        // Pre-launch corps = booked before first salesByDate entry
-        const firstSalesDate = Object.keys(salesByDate).sort()[0];
-        const preLaunchCorps = corporateBookings.filter(c => c.date < firstSalesDate);
-        const postLaunchCorps = corporateBookings.filter(c => c.date >= firstSalesDate);
-        const preLaunchCorpUnallocated = preLaunchCorps.reduce((sum, c) => sum + c.tickets, 0) 
-            - preLaunchCorps.reduce((sum, c) => sum + c.onStartlist, 0);
-        
+        // (firstSalesDate, preLaunchCorps, postLaunchCorps, preLaunchCorpUnallocated defined above)
         let cumulativeTotal = earlyBirdTotal + preLaunchCorpUnallocated;
         
         weeks.forEach((week, i) => {
