@@ -619,7 +619,15 @@
                 <div class="run-rate-detail" style="flex-direction: column; gap: 1rem;">
                     <div class="run-rate-item">
                         <div class="run-rate-item-value" id="revCurrent">£25,346</div>
-                        <div class="run-rate-item-label">Revenue to Date</div>
+                        <div class="run-rate-item-label">Revenue to Date (ex-VAT)</div>
+                    </div>
+                    <div class="run-rate-item">
+                        <div class="run-rate-item-value" id="revVAT" style="color: rgba(255,255,255,0.5);">£5,069</div>
+                        <div class="run-rate-item-label" style="color: rgba(255,255,255,0.5);">VAT (20%)</div>
+                    </div>
+                    <div class="run-rate-item">
+                        <div class="run-rate-item-value" id="revCurrentIncVAT" style="color: var(--accent-yellow);">£30,415</div>
+                        <div class="run-rate-item-label">Revenue to Date (inc-VAT)</div>
                     </div>
                     <div class="run-rate-item">
                         <div class="run-rate-item-value" id="revCurrentPace" style="color: #4ade80;">£563</div>
@@ -868,7 +876,13 @@
         const generalPrice = 29.17;
         const earlyBirdTicketsSold = 70;
         const generalTickets = startlistTotal - earlyBirdTicketsSold - corpOnStartlist;
-        const revenueCurrent = (earlyBirdTicketsSold * earlyBirdPrice) + (generalTickets * generalPrice) + corpRevenue;
+        // Corporate revenue from LDT is inc-VAT — convert to ex-VAT before adding to organic figures
+        const corpRevenueExVAT = corpRevenue / 1.2;
+        const revenueCurrentExVAT = (earlyBirdTicketsSold * earlyBirdPrice) + (generalTickets * generalPrice) + corpRevenueExVAT;
+        const revenueVAT = revenueCurrentExVAT * 0.2;
+        const revenueCurrentIncVAT = revenueCurrentExVAT * 1.2;
+        // Target and run-rate calcs use ex-VAT basis
+        const revenueCurrent = revenueCurrentExVAT;
         const revenueRemaining = revenueTarget - revenueCurrent;
         const revRequiredDaily = revenueRemaining / daysToEvent;
         const revCurrentPace = organicDailyPace * generalPrice;
@@ -908,7 +922,9 @@
         
         // Revenue
         document.getElementById('revRunRate').textContent = fmtCurrency(revRequiredDaily);
-        document.getElementById('revCurrent').textContent = fmtCurrency(revenueCurrent);
+        document.getElementById('revCurrent').textContent = fmtCurrency(revenueCurrentExVAT);
+        document.getElementById('revVAT').textContent = fmtCurrency(revenueVAT);
+        document.getElementById('revCurrentIncVAT').textContent = fmtCurrency(revenueCurrentIncVAT);
         document.getElementById('revCurrentPace').textContent = fmtCurrency(revCurrentPace);
         document.getElementById('revProjected').textContent = fmtCurrency(revProjected);
         
