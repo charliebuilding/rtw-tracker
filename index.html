@@ -1143,7 +1143,32 @@
                             color: '#606070',
                             stepSize: 500
                         },
-                        grid: { color: '#2a2a38' }
+                        grid: { color: '#2a2a38' },
+                        title: {
+                            display: true,
+                            text: 'Tickets Sold',
+                            color: '#9090a0',
+                            font: { size: 11 }
+                        }
+                    },
+                    yRevenue: {
+                        position: 'right',
+                        min: 0,
+                        suggestedMax: Math.ceil(Math.max(...projected2026.filter(v => v !== null)) / 500) * 500 + 500,
+                        ticks: {
+                            color: '#606070',
+                            stepSize: 500,
+                            callback: function(value) {
+                                return '£' + Math.round(value * generalPrice / 1000) + 'k';
+                            }
+                        },
+                        grid: { drawOnChartArea: false },
+                        title: {
+                            display: true,
+                            text: 'Revenue ex-VAT',
+                            color: '#9090a0',
+                            font: { size: 11 }
+                        }
                     }
                 },
                 plugins: {
