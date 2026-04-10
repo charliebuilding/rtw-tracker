@@ -1004,71 +1004,69 @@
         // ╚════════════════════════════════════════════════════════════════════════════╝
         const ctx = document.getElementById('mainChart').getContext('2d');
         
-        // X-axis: Weeks to Event - 33 on left (launch), 0 on right (event day)
-        // Lines will naturally go UP from left to right as tickets accumulate
-        const weeksToEvent = ['33', '32', '31', '30', '28', '24', '20', '16', '12', '8', '4', '0'];
-        
-        // RTW 2026 data mapped to weeks-to-event (left to right = progress toward event)
-        // Now at 28 weeks out (16 Feb) - total 861 with new Antares corporate
-        const actual2026 = [
-            202,   // 33 weeks out (early bird + corp unallocated at that time)
-            473,   // 32 weeks out
-            636,   // 31 weeks out  
-            740,   // 30 weeks out
-            totalSales,  // 28 weeks out (861 current)
-            null, null, null, null, null, null, null
-        ];
-        
-        // 2026 projected: organic pace until 12 weeks out, then 2025's sales distribution
-        // In 2025, from 12 weeks to event they sold 2,061 tickets:
+        // X-axis: Weeks to Event - left=launch, right=event day
+        // Milestone weeks + current week are computed dynamically so projections
+        // always anchor to the live data date.
+        const currentWeeksToEvent = Math.round(daysToEvent / 7);
+        const MILESTONE_WEEKS = [33, 32, 31, 30, 28, 24, 20, 16, 12, 8, 4, 0];
+        const weekNumbers = [...new Set([...MILESTONE_WEEKS, currentWeeksToEvent])]
+            .filter(w => w >= 0 && w <= 33)
+            .sort((a, b) => b - a);  // 33 → 0
+        const weeksToEvent = weekNumbers.map(String);
+
+        // Historical RTW 2026 snapshots: recorded cumulative totals at past checkpoints.
+        // Add new entries here as weeks pass so the actual line stays smooth.
+        const rtw2026Snapshots = {
+            33: 202,   // launch
+            32: 473,
+            31: 636,
+            30: 740,
+            28: 861,   // 16 Feb 2026
+        };
+
+        // Actual 2026 line: historical snapshots in the past, current totalSales now, null in the future
+        const actual2026 = weekNumbers.map(w => {
+            if (w === currentWeeksToEvent) return totalSales;
+            if (w > currentWeeksToEvent) return rtw2026Snapshots[w] ?? null;
+            return null;
+        });
+
+        // Projected line: organic pace until 12 weeks out, then 2025's sales distribution.
+        // 2025 sold 2,061 tickets from 12 weeks to event day:
         //   12→8 wks: 654 (31.7%), 8→4 wks: 892 (43.3%), 4→0 wks: 515 (25.0%)
-        const proj12 = Math.round(totalSales + organicDailyPace * 112);
-        const remainingFrom12 = organicDailyPace * 84;  // 12 weeks = 84 days at organic pace
-        const proj8  = Math.round(proj12 + remainingFrom12 * 0.317);   // 31.7% sold 12→8
-        const proj4  = Math.round(proj8 + remainingFrom12 * 0.433);    // 43.3% sold 8→4
-        const proj0  = Math.round(proj4 + remainingFrom12 * 0.250);    // 25.0% sold 4→0
-        const projected2026 = [
-            null, null, null, null,
-            totalSales,
-            Math.round(totalSales + organicDailyPace * 28),   // 24 weeks
-            Math.round(totalSales + organicDailyPace * 56),   // 20 weeks
-            Math.round(totalSales + organicDailyPace * 84),   // 16 weeks
-            proj12,   // 12 weeks - then apply 2025 distribution
-            proj8,    // 8 weeks
-            proj4,    // 4 weeks
-            proj0     // Event day
-        ];
-        
-        // Target pace (linear from early bird to 4000)
-        const target2026 = [202, 321, 436, 552, 782, 1243, 1704, 2165, 2626, 3087, 3548, 4000];
+        const daysUntil12Weeks = Math.max(0, daysToEvent - 84);
+        const baseAt12 = totalSales + organicDailyPace * daysUntil12Weeks;
+        const remainingFrom12 = organicDailyPace * 84;  // organic-pace baseline for last 12 wks
 
-        // Target pace to 5000 (stretch target)
-        const target5000 = [202, 393, 578, 763, 1100, 1763, 2425, 3088, 3475, 3950, 4475, 5000];
+        function projectedAt(w) {
+            if (w > currentWeeksToEvent) return null;  // in the past
+            if (w === currentWeeksToEvent) return totalSales;
+            const daysFromNow = daysToEvent - w * 7;
+            if (w >= 12) {
+                // Linear organic pace until we reach 12 weeks out
+                return Math.round(totalSales + organicDailyPace * daysFromNow);
+            }
+            // Below 12 weeks: 2025's sales distribution applied to the organic baseline
+            let fraction = 0;
+            if (w >= 8)       fraction = 0.317 * (12 - w) / 4;
+            else if (w >= 4)  fraction = 0.317 + 0.433 * (8 - w) / 4;
+            else              fraction = 0.317 + 0.433 + 0.250 * (4 - w) / 4;
+            return Math.round(baseAt12 + remainingFrom12 * fraction);
+        }
+        const projected2026 = weekNumbers.map(projectedAt);
 
-        // 2025-trajectory projection: applies 2025's week-over-week growth ratios to 2026's projected position
-        // 2025 pattern: 308 (12wk) → 962 (8wk) → 1854 (4wk) → 2369 (0wk)
-        // Growth ratios: 3.12x (12→8), 1.93x (8→4), 1.28x (4→0)
-        const proj12wk = Math.round(totalSales + organicDailyPace * 112);  // projected at 12 weeks out
-        const proj8wk_2025curve = Math.round(proj12wk * (962 / 308));      // apply 2025 12→8 ratio
-        const proj4wk_2025curve = Math.round(proj8wk_2025curve * (1854 / 962));  // apply 2025 8→4 ratio
-        const proj0wk_2025curve = Math.round(proj4wk_2025curve * (2369 / 1854)); // apply 2025 4→0 ratio
-        const projected2025curve = [
-            null, null, null, null, null, null, null, null,
-            proj12wk,
-            proj8wk_2025curve,
-            proj4wk_2025curve,
-            proj0wk_2025curve
-        ];
-        
-        // RTW 2025 - ONLY appears from ~12 weeks out (their launch was 15 weeks before event)
-        const actual2025 = [
-            null, null, null, null,  // 33-28 weeks: 2025 hadn't launched
-            null, null, null, null,  // 24-16 weeks: 2025 hadn't launched
-            308,   // 12 weeks out
-            962,   // 8 weeks out
-            1854,  // 4 weeks out
-            rtw2025.finalTotal  // Event day: 2369
-        ];
+        // Target pace (linear from initial state to 4,000 / 5,000 stretch)
+        const initialAtLaunch = rtw2026Snapshots[33] ?? earlyBirdTotal;
+        const target2026 = weekNumbers.map(w =>
+            Math.round(initialAtLaunch + (target - initialAtLaunch) * (33 - w) / 33)
+        );
+        const target5000 = weekNumbers.map(w =>
+            Math.round(initialAtLaunch + (5000 - initialAtLaunch) * (33 - w) / 33)
+        );
+
+        // RTW 2025 — only appears from ~12 weeks out (their launch was 15 weeks before event)
+        const rtw2025Snapshots = {12: 308, 8: 962, 4: 1854, 0: rtw2025.finalTotal};
+        const actual2025 = weekNumbers.map(w => rtw2025Snapshots[w] ?? null);
         
         new Chart(ctx, {
             type: 'line',
