@@ -26,6 +26,14 @@ SCRIPT_DIR = Path(__file__).parent
 INDEX_HTML = SCRIPT_DIR / "index.html"
 LAUNCH_DATE = "2026-01-18"
 
+PUBLIC_EMAIL_DOMAINS = {
+    "gmail.com", "googlemail.com", "outlook.com", "hotmail.com",
+    "yahoo.com", "yahoo.co.uk", "icloud.com", "me.com", "mac.com",
+    "live.com", "live.co.uk", "aol.com", "protonmail.com", "proton.me",
+    "pm.me", "hey.com", "msn.com", "btinternet.com", "sky.com",
+    "virginmedia.com", "ntlworld.com",
+}
+
 
 def find_latest_csv(pattern):
     """Find the most recent CSV matching a pattern in ~/Downloads."""
@@ -125,6 +133,31 @@ def parse_startlist(csv_path):
     return early_bird, post_launch
 
 
+def count_startlist_by_domain(csv_path, domains):
+    """Count STARTLIST entries whose email domain matches a corporate domain.
+
+    Args:
+        csv_path: Path to STARTLIST CSV
+        domains: set of corporate email domains to match
+
+    Returns:
+        dict {domain: count}
+    """
+    counts = defaultdict(int)
+    if not domains:
+        return dict(counts)
+    with open(csv_path, "r", encoding="utf-8-sig") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            email = row.get("Email Address", "").strip().lower()
+            if not email or "@" not in email:
+                continue
+            domain = email.rsplit("@", 1)[-1]
+            if domain in domains:
+                counts[domain] += 1
+    return dict(counts)
+
+
 def parse_revenue(value):
     """Parse revenue string like '£562.50' or '£3,050' into float."""
     cleaned = re.sub(r"[£$,\s]", "", str(value))
@@ -136,7 +169,7 @@ def parse_revenue(value):
 
 def parse_application(csv_path):
     """Parse APPLICATION CSV and return corporate bookings aggregated by company."""
-    companies = defaultdict(lambda: {"tickets": 0, "revenue": 0.0, "date": None})
+    companies = defaultdict(lambda: {"tickets": 0, "revenue": 0.0, "date": None, "domain": None})
 
     with open(csv_path, "r", encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
@@ -148,6 +181,7 @@ def parse_application(csv_path):
             tickets = int(row.get("Tickets", 0))
             revenue = parse_revenue(row.get("Total paid", "0"))
             app_date = row.get("Application Date", "").strip()
+            email = row.get("Applicant Email", "").strip().lower()
 
             # Normalise date
             try:
@@ -162,6 +196,12 @@ def parse_application(csv_path):
             if companies[company]["date"] is None or app_date < companies[company]["date"]:
                 companies[company]["date"] = app_date
 
+            # Capture corporate domain from applicant email (first valid non-public one wins)
+            if email and "@" in email and companies[company]["domain"] is None:
+                domain = email.rsplit("@", 1)[-1]
+                if domain and domain not in PUBLIC_EMAIL_DOMAINS:
+                    companies[company]["domain"] = domain
+
     # Sort by tickets descending
     bookings = []
     for company, data in sorted(companies.items(), key=lambda x: x[1]["tickets"], reverse=True):
@@ -170,6 +210,7 @@ def parse_application(csv_path):
             "tickets": data["tickets"],
             "revenue": round(data["revenue"]),
             "date": data["date"],
+            "domain": data["domain"],
             "onStartlist": 0,  # Will be preserved from existing data where possible
         })
 
@@ -201,8 +242,10 @@ def format_corporate_bookings(bookings, existing_on_startlist):
     """Format corporateBookings as a JS array string."""
     lines = []
     for b in bookings:
-        # Preserve existing onStartlist values
-        on_startlist = existing_on_startlist.get(b["company"], b["onStartlist"])
+        # Prefer the higher of existing manual value or auto-matched count, capped at tickets
+        existing = existing_on_startlist.get(b["company"], 0)
+        auto = b.get("auto_onStartlist", 0)
+        on_startlist = min(max(existing, auto), b["tickets"])
         parts = [
             f"company: '{b['company']}'",
             f"tickets: {b['tickets']}",
@@ -337,6 +380,23 @@ def main():
 
     print("\n3. Parsing APPLICATION...")
     corporate_bookings = parse_application(application_path)
+
+    # Auto-match corporate onStartlist by email domain between STARTLIST and APPLICATION
+    print("\n3b. Auto-matching corporate onStartlist by email domain...")
+    corporate_domains = {b["domain"] for b in corporate_bookings if b["domain"]}
+    startlist_by_domain = count_startlist_by_domain(startlist_path, corporate_domains)
+    no_domain = []
+    for b in corporate_bookings:
+        if not b["domain"]:
+            no_domain.append(b["company"])
+            b["auto_onStartlist"] = 0
+            continue
+        auto_count = min(startlist_by_domain.get(b["domain"], 0), b["tickets"])
+        b["auto_onStartlist"] = auto_count
+        if auto_count > 0:
+            print(f"  {b['company']} ({b['domain']}): {auto_count} matched on startlist")
+    if no_domain:
+        print(f"  No usable domain for: {', '.join(no_domain)}")
 
     # Determine data date (latest date in the sales data) + current time
     all_dates = list(post_launch_sales.keys())

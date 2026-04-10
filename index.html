@@ -705,7 +705,7 @@
         const CONFIG = {
             launchDate: '2026-01-18',
             eventDate: '2026-09-04',
-            dataDate: '2026-04-09T07:33',  // 📅 UPDATE THIS: Date/time of latest update
+            dataDate: '2026-04-09T15:39',  // 📅 UPDATE THIS: Date/time of latest update
             target: 4000,
             earlyBirdTotal: 73,      // Pre-launch sales (before 18 Jan)
             
@@ -802,24 +802,24 @@
         // 📅 UPDATE THIS: Add new corporate bookings, set isNew: true for recent ones
         const corporateBookings = [
             { company: 'Brookfield Asset Management', tickets: 100, revenue: 3050, date: '2026-01-26', onStartlist: 0 },
-            { company: 'Energy Aspects', tickets: 70, revenue: 1968, date: '2026-03-17', onStartlist: 0 },
+            { company: 'Energy Aspects', tickets: 70, revenue: 1968, date: '2026-03-17', onStartlist: 19 },
             { company: 'Alvarez & Marsal Tax LLP', tickets: 35, revenue: 1129, date: '2026-03-26', onStartlist: 0 },
-            { company: 'CWG', tickets: 30, revenue: 1115, date: '2026-03-17', onStartlist: 0 },
+            { company: 'CWG', tickets: 30, revenue: 1115, date: '2026-03-17', onStartlist: 12 },
             { company: 'Fitness forever studio', tickets: 20, revenue: 680, date: '2026-04-01', onStartlist: 0 },
             { company: 'Antares', tickets: 20, revenue: 750, date: '2026-02-11', onStartlist: 0 },
             { company: 'Vantage', tickets: 20, revenue: 610, date: '2026-01-26', onStartlist: 13 },
             { company: 'Correlation Risk Partners', tickets: 18, revenue: 612, date: '2026-03-25', onStartlist: 0 },
             { company: '10x Banking', tickets: 15, revenue: 562, date: '2026-03-02', onStartlist: 0 },
-            { company: 'Cremello Currency Management', tickets: 14, revenue: 476, date: '2026-03-23', onStartlist: 0 },
-            { company: 'News UK', tickets: 13, revenue: 442, date: '2026-03-30', onStartlist: 0 },
-            { company: 'PwC', tickets: 12, revenue: 408, date: '2026-03-19', onStartlist: 0 },
-            { company: 'Caplin Systems Ltd', tickets: 12, revenue: 450, date: '2026-01-29', onStartlist: 8 },
+            { company: 'Cremello Currency Management', tickets: 14, revenue: 476, date: '2026-03-23', onStartlist: 4 },
+            { company: 'News UK', tickets: 13, revenue: 442, date: '2026-03-30', onStartlist: 11 },
+            { company: 'PwC', tickets: 12, revenue: 408, date: '2026-03-19', onStartlist: 7 },
+            { company: 'Caplin Systems Ltd', tickets: 12, revenue: 450, date: '2026-01-29', onStartlist: 10 },
             { company: 'Ralph Lauren', tickets: 10, revenue: 350, date: '2026-04-09', onStartlist: 0 },
             { company: 'AON PLC', tickets: 10, revenue: 340, date: '2026-03-20', onStartlist: 0 },
             { company: 'Pullmann Global', tickets: 10, revenue: 360, date: '2026-02-25', onStartlist: 0 },
             { company: 'Momentum Global Investment Management', tickets: 10, revenue: 375, date: '2026-01-30', onStartlist: 0 },
             { company: 'Supagold Ltd', tickets: 10, revenue: 305, date: '2026-01-26', onStartlist: 5 },
-            { company: 'FreedomPay', tickets: 5, revenue: 179, date: '2026-03-18', onStartlist: 0 },
+            { company: 'FreedomPay', tickets: 5, revenue: 179, date: '2026-03-18', onStartlist: 1 },
             { company: 'HSBC', tickets: 4, revenue: 150, date: '2026-02-27', onStartlist: 4 },
             { company: 'Dcjs property limited', tickets: 3, revenue: 112, date: '2026-04-01', onStartlist: 0 },
             { company: 'JV Price Ltd', tickets: 3, revenue: 112, date: '2026-03-17', onStartlist: 0 },
@@ -887,10 +887,9 @@
         const revenueTarget = 114792;
         const earlyBirdPrice = 25;
         const generalPrice = 29.17;
-        const earlyBirdTicketsSold = 70;
-        const generalTickets = startlistTotal - earlyBirdTicketsSold - corpOnStartlist;
+        const generalTickets = startlistTotal - earlyBirdTotal - corpOnStartlist;
         // All prices (organic and corporate) are inc-VAT — strip VAT from the total
-        const revenueCurrentIncVAT = (earlyBirdTicketsSold * earlyBirdPrice) + (generalTickets * generalPrice) + corpRevenue;
+        const revenueCurrentIncVAT = (earlyBirdTotal * earlyBirdPrice) + (generalTickets * generalPrice) + corpRevenue;
         const revenueCurrentExVAT = revenueCurrentIncVAT / 1.2;
         const revenueVAT = revenueCurrentIncVAT - revenueCurrentExVAT;
         // Target and run-rate calcs use ex-VAT basis
