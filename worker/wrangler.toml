@@ -1,0 +1,12 @@
+name = "rtw-tracker-chat"
+main = "src/index.js"
+compatibility_date = "2026-01-01"
+
+# Native rate-limit binding. Limits each IP to 15 requests per 60s window.
+# (The native limiter only supports 10s or 60s windows — for daily quotas
+# we'd need KV. 15/min is plenty for genuine use and stops casual abuse.)
+[[unsafe.bindings]]
+name = "RATE_LIMITER"
+type = "ratelimit"
+namespace_id = "1001"
+simple = { limit = 15, period = 60 }
