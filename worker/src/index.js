@@ -3,7 +3,7 @@
 // Holds the Anthropic API key as a Worker secret so the static site doesn't have to.
 
 const ALLOWED_ORIGINS = [
-  'https://charliebuilding.github.io',
+  'https://rtw-tracker.netlify.app',
   'http://localhost:8000',
   'http://127.0.0.1:8000',
   'http://localhost:8787',
