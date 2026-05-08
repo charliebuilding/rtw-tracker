@@ -2036,18 +2036,38 @@
                 let buffer = '';
                 let acc = '';
                 let firstChunk = true;
+                let upstreamError = null;
+                let stopReason = null;
+
+                function findFrameEnd(buf) {
+                    // SSE allows \n\n, \r\n\r\n, or \r\r as event separators.
+                    // Return the index of the FIRST one found, or -1 if none.
+                    let best = -1;
+                    for (const sep of ['\n\n', '\r\n\r\n', '\r\r']) {
+                        const i = buf.indexOf(sep);
+                        if (i !== -1 && (best === -1 || i < best)) best = i;
+                    }
+                    return best;
+                }
+                function frameSepLen(buf, idx) {
+                    if (buf.startsWith('\r\n\r\n', idx)) return 4;
+                    if (buf.startsWith('\n\n', idx)) return 2;
+                    return 2; // \r\r
+                }
+                function splitLines(s) {
+                    return s.split(/\r\n|\r|\n/);
+                }
 
                 while (true) {
                     const { done, value } = await reader.read();
                     if (done) break;
                     buffer += decoder.decode(value, { stream: true });
 
-                    // SSE frames are separated by blank lines.
                     let sep;
-                    while ((sep = buffer.indexOf('\n\n')) !== -1) {
+                    while ((sep = findFrameEnd(buffer)) !== -1) {
                         const frame = buffer.slice(0, sep);
-                        buffer = buffer.slice(sep + 2);
-                        for (const line of frame.split('\n')) {
+                        buffer = buffer.slice(sep + frameSepLen(buffer, sep));
+                        for (const line of splitLines(frame)) {
                             if (!line.startsWith('data:')) continue;
                             const data = line.slice(5).trim();
                             if (!data || data === '[DONE]') continue;
@@ -2058,8 +2078,10 @@
                                     acc += evt.delta.text;
                                     assistantBubble.innerHTML = renderMarkdown(acc);
                                     messagesEl.scrollTop = messagesEl.scrollHeight;
-                                } else if (evt.type === 'message_stop') {
-                                    // done
+                                } else if (evt.type === 'message_delta' && evt.delta && evt.delta.stop_reason) {
+                                    stopReason = evt.delta.stop_reason;
+                                } else if (evt.type === 'error') {
+                                    upstreamError = (evt.error && evt.error.message) || 'Upstream error.';
                                 }
                             } catch {
                                 // ignore unparsable frames
@@ -2073,7 +2095,15 @@
                     history.push({ role: 'assistant', content: acc });
                 } else {
                     assistantBubble.remove();
-                    appendMessage('error', 'Empty reply from the model. Try again or rephrase.');
+                    let msg;
+                    if (upstreamError) {
+                        msg = 'Model error: ' + upstreamError;
+                    } else if (stopReason && stopReason !== 'end_turn') {
+                        msg = 'Reply ended early (' + stopReason + '). Try rephrasing.';
+                    } else {
+                        msg = 'Empty reply — likely a transient hiccup. Please try again.';
+                    }
+                    appendMessage('error', msg);
                 }
             }
 
