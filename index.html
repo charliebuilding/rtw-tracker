@@ -1548,7 +1548,7 @@
                             color: '#606070',
                             stepSize: 500,
                             callback: function(value) {
-                                return '£' + Math.round(value * generalPrice / 1000) + 'k';
+                                return '£' + Math.round(value * generalPrice / 1.2 / 1000) + 'k';
                             }
                         },
                         grid: { drawOnChartArea: false },
