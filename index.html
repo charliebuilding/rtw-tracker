@@ -1548,7 +1548,10 @@
                             color: '#606070',
                             stepSize: 500,
                             callback: function(value) {
-                                return '£' + Math.round(value * generalPrice / 1.2 / 1000) + 'k';
+                                // Use target-implied per-ticket ex-VAT (£114,792 / 4,000 = £28.70)
+                                // so the yellow target line lands on £114k and 2025's 2,369 ticket
+                                // total reads as ex-VAT rather than the original inc-VAT figure.
+                                return '£' + Math.round(value * (revenueTarget / target) / 1000) + 'k';
                             }
                         },
                         grid: { drawOnChartArea: false },
