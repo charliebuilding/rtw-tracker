@@ -25,7 +25,6 @@ from pathlib import Path
 SCRIPT_DIR = Path(__file__).parent
 INDEX_HTML = SCRIPT_DIR / "index.html"
 LAUNCH_DATE = "2026-01-18"
-EVENT_DATE = "2026-09-04"
 
 PUBLIC_EMAIL_DOMAINS = {
     "gmail.com", "googlemail.com", "outlook.com", "hotmail.com",
@@ -33,12 +32,6 @@ PUBLIC_EMAIL_DOMAINS = {
     "live.com", "live.co.uk", "aol.com", "protonmail.com", "proton.me",
     "pm.me", "hey.com", "msn.com", "btinternet.com", "sky.com",
     "virginmedia.com", "ntlworld.com",
-}
-
-# Manual revenue overrides for companies that paid outside the LDT system.
-# Keyed by Company Name as it appears in the APPLICATION CSV.
-REVENUE_OVERRIDES = {
-    "State Street": 1330,
 }
 
 
@@ -209,11 +202,6 @@ def parse_application(csv_path):
                 if domain and domain not in PUBLIC_EMAIL_DOMAINS:
                     companies[company]["domain"] = domain
 
-    # Apply manual revenue overrides for companies that paid outside LDT
-    for company, override in REVENUE_OVERRIDES.items():
-        if company in companies:
-            companies[company]["revenue"] = override
-
     # Sort by tickets descending
     bookings = []
     for company, data in sorted(companies.items(), key=lambda x: x[1]["tickets"], reverse=True):
@@ -269,64 +257,6 @@ def format_corporate_bookings(bookings, existing_on_startlist):
     return "\n".join(lines)
 
 
-def update_snapshots(html, total_sales, weeks_to_event, today_iso):
-    """Add/update the rtw2026Snapshots entry for the current week, so the
-    teal "actual" line gains a data point each time we run."""
-    # Match the dict body so we can parse and rewrite it.
-    pattern = re.compile(
-        r"(const rtw2026Snapshots = \{)(\n.*?\n)(\s*\};)",
-        re.DOTALL,
-    )
-    m = pattern.search(html)
-    if not m:
-        return html
-
-    body = m.group(2)
-    # Parse "<week>: <value>," lines, preserving any trailing comment.
-    entry_re = re.compile(r"^(\s*)(\d+):\s*(\d+),(.*)$")
-    entries = {}  # week -> (indent, value, trailing)
-    order = []
-    for line in body.splitlines():
-        em = entry_re.match(line)
-        if em:
-            week = int(em.group(2))
-            if week not in entries:
-                order.append(week)
-            entries[week] = (em.group(1), int(em.group(3)), em.group(4))
-
-    indent = entries[order[0]][0] if order else "            "
-
-    # Skip writing a snapshot for week 0 onwards (event has happened) or
-    # for the launch week (already seeded as the canonical starting point).
-    if weeks_to_event > 0 and weeks_to_event < 33:
-        existing = entries.get(weeks_to_event)
-        trailing = f"   // {today_iso}"
-        if existing is None:
-            order.append(weeks_to_event)
-        entries[weeks_to_event] = (indent, total_sales, trailing)
-
-    new_lines = []
-    for week in sorted(set(order), reverse=True):
-        ind, val, trail = entries[week]
-        new_lines.append(f"{ind}{week}: {val},{trail}")
-    new_body = "\n" + "\n".join(new_lines) + "\n"
-    return pattern.sub(lambda _m: _m.group(1) + new_body + _m.group(3), html, count=1)
-
-
-def compute_total_sales(early_bird, post_launch_sales, corporate_bookings, existing_on_startlist):
-    """Mirror the JS totalSales calc: startlist total + corporate-unallocated."""
-    post_launch = sum(post_launch_sales.values())
-    startlist_total = early_bird + post_launch
-    corp_sold = sum(b["tickets"] for b in corporate_bookings)
-    corp_on_startlist = 0
-    for b in corporate_bookings:
-        existing = existing_on_startlist.get(b["company"], 0)
-        auto = b.get("auto_onStartlist", 0)
-        corp_on_startlist += min(max(existing, auto), b["tickets"])
-    corp_unallocated = corp_sold - corp_on_startlist
-    return startlist_total + corp_unallocated
-
-
 def update_html(early_bird, post_launch_sales, corporate_bookings, data_date):
     """Update index.html with new data."""
     with open(INDEX_HTML, "r", encoding="utf-8") as f:
@@ -367,19 +297,10 @@ def update_html(early_bird, post_launch_sales, corporate_bookings, data_date):
         flags=re.DOTALL,
     )
 
-    # 5. Append a snapshot for the current week so the actual line keeps growing
-    total_sales = compute_total_sales(early_bird, post_launch_sales, corporate_bookings, existing_on_startlist)
-    today = date.today()
-    event = date.fromisoformat(EVENT_DATE)
-    days_to_event = (event - today).days
-    weeks_to_event = round(days_to_event / 7)
-    html = update_snapshots(html, total_sales, weeks_to_event, today.isoformat())
-
     with open(INDEX_HTML, "w", encoding="utf-8") as f:
         f.write(html)
 
     print(f"  Updated {INDEX_HTML}")
-    print(f"  Snapshot added: week {weeks_to_event} → {total_sales} tickets")
 
 
 def git_commit_and_push(data_date):
