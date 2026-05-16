@@ -1587,7 +1587,12 @@
                             },
                             label: function(context) {
                                 if (context.parsed.y === null) return null;
-                                return context.dataset.label + ': ' + context.parsed.y.toLocaleString() + ' tickets';
+                                const tickets = context.parsed.y;
+                                const revenue = Math.round(tickets * (revenueTarget / target));
+                                return [
+                                    context.dataset.label + ': ' + tickets.toLocaleString() + ' tickets',
+                                    '  Revenue: £' + revenue.toLocaleString()
+                                ];
                             }
                         }
                     }
