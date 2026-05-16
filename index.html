@@ -1449,48 +1449,27 @@
         }
         const projected2026 = weekNumbers.map(projectedAt);
 
-        // Target trajectory shaped by 2025's actual sales distribution rather
-        // than a flat constant pace. Pre-12-weeks segment ramps linearly from
-        // launch to a 12-week anchor; final 12 weeks apply the 31.7/43.3/25.0
-        // split observed in 2025 (see projectedAt above). 2025 hit 13% of
-        // their final total by the 12-week mark, so we mirror that anchor.
+        // Target pace (linear from initial state to 4,000 / 5,000 stretch)
         const initialAtLaunch = rtw2026Snapshots[33] ?? earlyBirdTotal;
-        const TARGET_WEEK12_FRACTION = 0.13;
-        function targetTrajectory(finalTarget) {
-            const valAt12 = finalTarget * TARGET_WEEK12_FRACTION;
-            const remaining = finalTarget - valAt12;
-            return (w) => {
-                if (w >= 12) {
-                    return Math.round(initialAtLaunch + (valAt12 - initialAtLaunch) * (33 - w) / 21);
-                }
-                let frac;
-                if (w >= 8)      frac = 0.317 * (12 - w) / 4;
-                else if (w >= 4) frac = 0.317 + 0.433 * (8 - w) / 4;
-                else             frac = 0.317 + 0.433 + 0.250 * (4 - w) / 4;
-                return Math.round(valAt12 + remaining * frac);
-            };
-        }
-        const target2026 = weekNumbers.map(targetTrajectory(target));
-        const target5000 = weekNumbers.map(targetTrajectory(5000));
+        const target2026 = weekNumbers.map(w =>
+            Math.round(initialAtLaunch + (target - initialAtLaunch) * (33 - w) / 33)
+        );
+        const target5000 = weekNumbers.map(w =>
+            Math.round(initialAtLaunch + (5000 - initialAtLaunch) * (33 - w) / 33)
+        );
 
         // RTW 2025 — only appears from ~12 weeks out (their launch was 15 weeks before event)
         const rtw2025Snapshots = {12: 308, 8: 962, 4: 1854, 0: rtw2025.finalTotal};
         const actual2025 = weekNumbers.map(w => rtw2025Snapshots[w] ?? null);
         
-        // Convert value arrays to {x, y} points keyed on real week numbers so
-        // the linear x-axis positions every point at its true horizontal
-        // location (no categorical compression of multi-week gaps).
-        // Missing values keep their x and use y:null so spanGaps still works
-        // (Chart.js throws if it encounters a bare null inside a points array).
-        const toPoints = (vals) => weekNumbers.map((w, i) => ({x: w, y: vals[i] === undefined ? null : vals[i]}));
-
         new Chart(ctx, {
             type: 'line',
             data: {
+                labels: weeksToEvent,
                 datasets: [
                     {
                         label: 'RTW 2026 Actual',
-                        data: toPoints(actual2026),
+                        data: actual2026,
                         borderColor: '#00ffd1',
                         backgroundColor: 'rgba(0, 255, 209, 0.15)',
                         borderWidth: 3,
@@ -1503,19 +1482,18 @@
                     },
                     {
                         label: 'RTW 2025 Actual',
-                        data: toPoints(actual2025),
+                        data: actual2025,
                         borderColor: '#9966ff',
                         backgroundColor: 'transparent',
                         borderWidth: 2,
                         tension: 0.3,
                         pointRadius: 4,
                         pointBackgroundColor: '#9966ff',
-                        pointHoverRadius: 6,
-                        spanGaps: true
+                        pointHoverRadius: 6
                     },
                     {
                         label: 'Target Pace (4,000)',
-                        data: toPoints(target2026),
+                        data: target2026,
                         borderColor: '#ffd700',
                         backgroundColor: 'transparent',
                         borderWidth: 2,
@@ -1526,15 +1504,14 @@
                     },
                     {
                         label: 'RTW 2026 Projected (Organic)',
-                        data: toPoints(projected2026),
+                        data: projected2026,
                         borderColor: '#ff006b',
                         backgroundColor: 'transparent',
                         borderWidth: 2,
                         borderDash: [6, 4],
                         tension: 0.3,
                         pointRadius: 0,
-                        pointHoverRadius: 4,
-                        spanGaps: true
+                        pointHoverRadius: 4
                     },
                 ]
             },
@@ -1543,25 +1520,16 @@
                 maintainAspectRatio: false,
                 scales: {
                     x: {
-                        type: 'linear',
-                        reverse: true,
-                        min: 0,
-                        max: 33,
                         title: {
                             display: true,
                             text: '← Weeks to Event',
                             color: '#9090a0',
                             font: { size: 12 }
                         },
-                        ticks: {
+                        ticks: { 
                             color: '#606070',
                             maxRotation: 0,
-                            font: { size: 11 },
-                            stepSize: 1,
-                            autoSkip: false,
-                            // Subset of MILESTONE_WEEKS — weeks 31/32 are visually too close
-                            // to 33 on the linear scale and their labels overlap.
-                            callback: (v) => [33, 28, 24, 20, 16, 12, 8, 4, 0].includes(v) ? v : ''
+                            font: { size: 11 }
                         },
                         grid: { color: '#2a2a38' }
                     },
