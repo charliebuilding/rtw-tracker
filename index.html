@@ -1404,11 +1404,17 @@
         // Milestone weeks + current week are computed dynamically so projections
         // always anchor to the live data date.
         const currentWeeksToEvent = Math.round(daysToEvent / 7);
-        const MILESTONE_WEEKS = [33, 32, 31, 30, 28, 24, 20, 16, 12, 8, 4, 0];
+        const MILESTONE_WEEKS = [33, 32, 30, 28, 26, 24, 22, 20, 18, 16, 14, 12, 10, 8, 6, 4, 2, 0];
         const weekNumbers = [...new Set([...MILESTONE_WEEKS, currentWeeksToEvent])]
             .filter(w => w >= 0 && w <= 33)
             .sort((a, b) => b - a);  // 33 → 0
-        const weeksToEvent = weekNumbers.map(String);
+        const fmtDayMonth = (date) =>
+            String(date.getDate()).padStart(2, '0') + '.' + String(date.getMonth() + 1).padStart(2, '0');
+        const weeksToEvent = weekNumbers.map(w => {
+            const d = new Date(eventDate);
+            d.setDate(d.getDate() - w * 7);
+            return [String(w), fmtDayMonth(d)];
+        });
 
         // Historical RTW 2026 snapshots: recorded cumulative totals at past checkpoints.
         // Add new entries here as weeks pass so the actual line stays smooth.
@@ -1420,7 +1426,6 @@
             28: 861,   // 16 Feb 2026
             24: 1538,  // 18 Mar 2026 (recovered from commit 6f05bb8)
             20: 2194,  // 16 Apr 2026 (recovered from commit d2a391b)
-            16: 2914,  // 2026-05-16
         };
 
         // Actual 2026 line: historical snapshots in the past, current totalSales now, null in the future
@@ -1586,7 +1591,8 @@
                         borderWidth: 1,
                         callbacks: {
                             title: function(context) {
-                                return context[0].label + ' weeks to event';
+                                const parts = context[0].label.split(',');
+                                return parts[0] + ' weeks to event (' + parts[1] + ')';
                             },
                             label: function(context) {
                                 if (context.parsed.y === null) return null;
