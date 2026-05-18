@@ -1428,12 +1428,22 @@
             20: 2194,  // 16 Apr 2026 (recovered from commit d2a391b)
         };
 
-        // Actual 2026 line: historical snapshots in the past, current totalSales now, null in the future
+        // Actual 2026 line: historical snapshots in the past, current totalSales now, null in the future.
+        // Past gaps between snapshots are linearly interpolated so a point marker lands on each tick.
         const actual2026 = weekNumbers.map(w => {
             if (w === currentWeeksToEvent) return totalSales;
             if (w > currentWeeksToEvent) return rtw2026Snapshots[w] ?? null;
             return null;
         });
+        for (let i = 0; i < actual2026.length; i++) {
+            if (actual2026[i] !== null) continue;
+            if (weekNumbers[i] < currentWeeksToEvent) continue;  // leave future as null
+            let L = i - 1, R = i + 1;
+            while (L >= 0 && actual2026[L] === null) L--;
+            while (R < actual2026.length && actual2026[R] === null) R++;
+            if (L < 0 || R >= actual2026.length) continue;
+            actual2026[i] = Math.round(actual2026[L] + (i - L) / (R - L) * (actual2026[R] - actual2026[L]));
+        }
 
         // Projected line: organic pace until 12 weeks out, then 2025's sales distribution.
         // 2025 sold 2,061 tickets from 12 weeks to event day:
@@ -1499,7 +1509,8 @@
                         tension: 0.3,
                         pointRadius: 4,
                         pointBackgroundColor: '#9966ff',
-                        pointHoverRadius: 6
+                        pointHoverRadius: 6,
+                        spanGaps: true
                     },
                     {
                         label: 'Target Pace (4,000)',
