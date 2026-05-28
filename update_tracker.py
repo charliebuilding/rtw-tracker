@@ -35,6 +35,14 @@ PUBLIC_EMAIL_DOMAINS = {
 }
 
 
+# Manual revenue overrides for companies that paid outside the LDT system
+# (e.g. invoiced directly, so the CSV shows £0). Keyed by Company Name as it
+# appears in the APPLICATION CSV.
+REVENUE_OVERRIDES = {
+    "State Street": 1330,
+}
+
+
 def find_latest_csv(pattern):
     """Find the most recent CSV matching a pattern in ~/Downloads."""
     downloads = Path.home() / "Downloads"
@@ -201,6 +209,11 @@ def parse_application(csv_path):
                 domain = email.rsplit("@", 1)[-1]
                 if domain and domain not in PUBLIC_EMAIL_DOMAINS:
                     companies[company]["domain"] = domain
+
+    # Apply manual revenue overrides for companies that paid outside LDT (CSV shows £0)
+    for company, override in REVENUE_OVERRIDES.items():
+        if company in companies:
+            companies[company]["revenue"] = override
 
     # Sort by tickets descending
     bookings = []

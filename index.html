@@ -987,6 +987,28 @@
             </div>
             <p id="corpWarning" style="font-size: 0.75rem; color: #ff006b; margin-top: 1rem; font-weight: 500;"></p>
         </div>
+        <!-- Sponsorship Tickets Section - Dynamically populated -->
+        <div class="table-section" style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05)); border-color: rgba(255, 215, 0, 0.3);">
+            <h3 class="chart-title" style="margin-bottom: 1rem; color: #ffd700;">Sponsorship Tickets</h3>
+            <div id="sponsorStatsGrid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+                <!-- Populated by JavaScript -->
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Partner</th>
+                            <th class="right">Tickets</th>
+                            <th class="right">Value (ex-VAT)</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sponsorTableBody">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
         <!-- Weekly Table -->
         <div class="table-section">
             <h3 class="chart-title" style="margin-bottom: 1rem;">Weekly Breakdown</h3>
@@ -1238,7 +1260,14 @@
             { company: 'Lloyds Bank', tickets: 2, revenue: 75, date: '2026-03-29', onStartlist: 0 },
             { company: 'Top Offer Academy', tickets: 2, revenue: 75, date: '2026-03-18', onStartlist: 0 },
         ];
-        
+
+        // === SPONSORSHIP TICKETS (hardcoded — not from LDT CSVs) ===
+        // revenue is the ex-VAT sponsorship value; inc-VAT is derived (×1.2).
+        // These count toward the total but are excluded from the organic daily pace.
+        const sponsorshipTickets = [
+            { partner: 'SportShoes Podium5k', tickets: 300, revenue: 5000, note: '£5,000 + VAT sponsorship allocation' },
+        ];
+
         // === RTW 2025 HISTORICAL DATA (for comparison chart) ===
         const rtw2025 = {
             launchDate: new Date('2025-05-23'),
@@ -1263,13 +1292,18 @@
         const corpOnStartlist = corporateBookings.reduce((sum, c) => sum + c.onStartlist, 0);
         const corpUnallocated = corpTicketsSold - corpOnStartlist;
         const corpCompanyCount = new Set(corporateBookings.map(c => c.company)).size;
-        
+
+        // Sponsorship calculations (hardcoded blocks, ex-VAT value)
+        const sponsorTicketsTotal = sponsorshipTickets.reduce((sum, s) => sum + s.tickets, 0);
+        const sponsorRevenueExVAT = sponsorshipTickets.reduce((sum, s) => sum + s.revenue, 0);
+        const sponsorRevenueIncVAT = sponsorRevenueExVAT * 1.2;
+
         // Startlist calculations
         const postLaunchSales = Object.values(salesByDate).reduce((a, b) => a + b, 0);
         const startlistTotal = earlyBirdTotal + postLaunchSales;
-        
-        // Total sold = startlist + unallocated corporate
-        const totalSales = startlistTotal + corpUnallocated;
+
+        // Total sold = startlist + unallocated corporate + sponsorship blocks
+        const totalSales = startlistTotal + corpUnallocated + sponsorTicketsTotal;
         const ticketsRemaining = target - totalSales;
         
         // Days calculations
@@ -1299,8 +1333,9 @@
         const earlyBirdPrice = 25;
         const generalPrice = 29.17;
         const generalTickets = startlistTotal - earlyBirdTotal - corpOnStartlist;
-        // All prices (organic and corporate) are inc-VAT — strip VAT from the total
-        const revenueCurrentIncVAT = (earlyBirdTotal * earlyBirdPrice) + (generalTickets * generalPrice) + corpRevenue;
+        // All prices (organic and corporate) are inc-VAT — strip VAT from the total.
+        // Sponsorship value is added as its inc-VAT equivalent so the /1.2 below recovers the ex-VAT figure.
+        const revenueCurrentIncVAT = (earlyBirdTotal * earlyBirdPrice) + (generalTickets * generalPrice) + corpRevenue + sponsorRevenueIncVAT;
         const revenueCurrentExVAT = revenueCurrentIncVAT / 1.2;
         const revenueVAT = revenueCurrentIncVAT - revenueCurrentExVAT;
         // Target and run-rate calcs use ex-VAT basis
@@ -1327,7 +1362,7 @@
         
         // Stats grid
         document.getElementById('statTotalTickets').textContent = fmt(totalSales);
-        document.getElementById('statTotalDetail').textContent = `${fmt(startlistTotal)} startlist + ${fmt(corpUnallocated)} unallocated corp`;
+        document.getElementById('statTotalDetail').textContent = `${fmt(startlistTotal)} startlist + ${fmt(corpUnallocated)} corp + ${fmt(sponsorTicketsTotal)} sponsor`;
         document.getElementById('statCorpTickets').textContent = fmt(corpTicketsSold);
         document.getElementById('statCorpDetail').textContent = `${corpCompanyCount} companies | ${fmtCurrency(corpRevenue)}`;
         document.getElementById('statRemaining').textContent = fmt(ticketsRemaining);
@@ -1410,6 +1445,38 @@
         // Corporate warning
         const pendingPct = Math.round((corpUnallocated / corpTicketsSold) * 100);
         document.getElementById('corpWarning').textContent = `⚠️ ${pendingPct}% of corporate tickets (${corpUnallocated}) awaiting participant details from companies`;
+        // ╔════════════════════════════════════════════════════════════════════════════╗
+        // ║  🎟️ SPONSORSHIP TICKETS TABLE                                            ║
+        // ╚════════════════════════════════════════════════════════════════════════════╝
+
+        // Sponsorship stats grid
+        document.getElementById('sponsorStatsGrid').innerHTML = `
+            <div style="text-align: center;">
+                <div style="font-size: 2rem; font-weight: 700; color: #ffd700;">${fmt(sponsorTicketsTotal)}</div>
+                <div style="font-size: 0.75rem; color: #9090a0; text-transform: uppercase;">Tickets</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 2rem; font-weight: 700; color: #ffd700;">${fmtCurrency(sponsorRevenueExVAT)}</div>
+                <div style="font-size: 0.75rem; color: #9090a0; text-transform: uppercase;">Value (ex-VAT)</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 2rem; font-weight: 700; color: #ffd700;">${sponsorshipTickets.length}</div>
+                <div style="font-size: 0.75rem; color: #9090a0; text-transform: uppercase;">Partners</div>
+            </div>
+        `;
+
+        // Sponsorship table body
+        const sponsorTableBody = document.getElementById('sponsorTableBody');
+        sponsorshipTickets.forEach(s => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${s.partner}</td>
+                <td class="right" style="color: #ffd700; font-weight: 600;">${fmt(s.tickets)}</td>
+                <td class="right">${fmtCurrency(s.revenue)}</td>
+                <td style="color: #9090a0; font-size: 0.85rem;">${s.note || ''}</td>
+            `;
+            sponsorTableBody.appendChild(row);
+        });
         // ╔════════════════════════════════════════════════════════════════════════════╗
         // ║  📈 CHARTS                                                                 ║
         // ╚════════════════════════════════════════════════════════════════════════════╝
