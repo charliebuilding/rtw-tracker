@@ -1069,7 +1069,7 @@
         const CONFIG = {
             launchDate: '2026-01-18',
             eventDate: '2026-09-04',
-            dataDate: '2026-05-29T07:28',  // 📅 UPDATE THIS: Date/time of latest update
+            dataDate: '2026-06-01T11:42',  // 📅 UPDATE THIS: Date/time of latest update
             target: 4000,
             earlyBirdTotal: 73,      // Pre-launch sales (before 18 Jan)
             
@@ -1209,17 +1209,22 @@
             '2026-05-26': 15,
             '2026-05-27': 8,
             '2026-05-28': 20,
-            '2026-05-29': 1,
+            '2026-05-29': 19,
+            '2026-05-30': 9,
+            '2026-05-31': 29,
+            '2026-06-01': 4,
         };
         
         // === CORPORATE BOOKINGS (from APPLICATION CSV) ===
         // 📅 UPDATE THIS: Add new corporate bookings, set isNew: true for recent ones
         const corporateBookings = [
             { company: 'Brookfield Asset Management', tickets: 100, revenue: 3050, date: '2026-01-26', onStartlist: 0 },
+            { company: 'J.P. Morgan', tickets: 82, revenue: 2650, date: '2026-05-18', onStartlist: 2 },
             { company: 'Energy Aspects', tickets: 70, revenue: 1968, date: '2026-03-17', onStartlist: 20 },
             { company: 'State Street', tickets: 40, revenue: 1330, date: '2026-04-29', onStartlist: 33 },
             { company: 'Alvarez & Marsal Tax LLP', tickets: 35, revenue: 1129, date: '2026-03-26', onStartlist: 0 },
             { company: 'CWG', tickets: 30, revenue: 1115, date: '2026-03-17', onStartlist: 15 },
+            { company: 'CBRE', tickets: 28, revenue: 931, date: '2026-05-31', onStartlist: 0 },
             { company: 'Delta Capita Ltd', tickets: 25, revenue: 831, date: '2026-05-27', onStartlist: 0 },
             { company: 'JPMorganChase', tickets: 25, revenue: 831, date: '2026-04-30', onStartlist: 2 },
             { company: 'EquiLend', tickets: 25, revenue: 831, date: '2026-04-10', onStartlist: 0 },
@@ -1233,7 +1238,7 @@
             { company: 'NG Bailey Limited', tickets: 17, revenue: 595, date: '2026-04-10', onStartlist: 0 },
             { company: '10x Banking', tickets: 15, revenue: 562, date: '2026-03-02', onStartlist: 0 },
             { company: 'Cremello Currency Management', tickets: 14, revenue: 476, date: '2026-03-23', onStartlist: 6 },
-            { company: 'Financial Reporting Council', tickets: 13, revenue: 455, date: '2026-05-27', onStartlist: 2 },
+            { company: 'Financial Reporting Council', tickets: 13, revenue: 455, date: '2026-05-27', onStartlist: 4 },
             { company: 'News UK', tickets: 13, revenue: 442, date: '2026-03-30', onStartlist: 11 },
             { company: 'Herbert Smith Freehills Kramer LLP', tickets: 12, revenue: 420, date: '2026-04-21', onStartlist: 0 },
             { company: 'Lantern.ai', tickets: 12, revenue: 420, date: '2026-04-17', onStartlist: 5 },
@@ -1243,7 +1248,7 @@
             { company: 'Low Carbon Contracts Company', tickets: 10, revenue: 350, date: '2026-04-17', onStartlist: 0 },
             { company: 'Ralph Lauren', tickets: 10, revenue: 350, date: '2026-04-09', onStartlist: 0 },
             { company: 'AON PLC', tickets: 10, revenue: 340, date: '2026-03-20', onStartlist: 0 },
-            { company: 'Pullmann Global', tickets: 10, revenue: 360, date: '2026-02-25', onStartlist: 0 },
+            { company: 'Pullmann Global', tickets: 10, revenue: 360, date: '2026-02-25', onStartlist: 3 },
             { company: 'Momentum Global Investment Management', tickets: 10, revenue: 375, date: '2026-01-30', onStartlist: 3 },
             { company: 'Supagold Ltd', tickets: 10, revenue: 305, date: '2026-01-26', onStartlist: 7 },
             { company: 'K2 International', tickets: 9, revenue: 331, date: '2026-05-27', onStartlist: 0 },
@@ -1256,7 +1261,6 @@
             { company: 'HSBC', tickets: 4, revenue: 150, date: '2026-02-27', onStartlist: 4 },
             { company: 'Dcjs property limited', tickets: 3, revenue: 112, date: '2026-04-01', onStartlist: 0 },
             { company: 'JV Price Ltd', tickets: 3, revenue: 112, date: '2026-03-17', onStartlist: 0 },
-            { company: 'J.P. Morgan', tickets: 2, revenue: 77, date: '2026-05-18', onStartlist: 2 },
             { company: 'Clifford Chance', tickets: 2, revenue: 77, date: '2026-04-15', onStartlist: 2 },
             { company: 'MHRA', tickets: 2, revenue: 75, date: '2026-04-01', onStartlist: 0 },
             { company: 'Lloyds Bank', tickets: 2, revenue: 75, date: '2026-03-29', onStartlist: 0 },
