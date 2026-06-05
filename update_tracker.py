@@ -394,6 +394,17 @@ def main():
     print("\n3. Parsing APPLICATION...")
     corporate_bookings = parse_application(application_path)
 
+    # Safety guard: if the APPLICATION CSV parsed zero companies (e.g. it's the
+    # individual-applications export with no "Company Name" column), abort
+    # rather than wipe out the existing corporate bookings.
+    if not corporate_bookings:
+        print(
+            "\nERROR: APPLICATION CSV parsed zero corporate companies. This usually means "
+            "the wrong export type was downloaded (no 'Company Name' column). "
+            "Refusing to overwrite existing corporate data."
+        )
+        sys.exit(1)
+
     # Auto-match corporate onStartlist by email domain between STARTLIST and APPLICATION
     print("\n3b. Auto-matching corporate onStartlist by email domain...")
     corporate_domains = {b["domain"] for b in corporate_bookings if b["domain"]}
