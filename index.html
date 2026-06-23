@@ -1534,34 +1534,32 @@
             return [String(w), fmtDayMonth(d)];
         });
 
-        // Historical RTW 2026 snapshots: recorded cumulative totals at past checkpoints.
-        // Add new entries here as weeks pass so the actual line stays smooth.
-        const rtw2026Snapshots = {
-            33: 202,   // launch
-            32: 473,
-            31: 636,
-            30: 740,
-            28: 861,   // 16 Feb 2026
-            24: 1538,  // 18 Mar 2026 (recovered from commit 6f05bb8)
-            20: 2194,  // 16 Apr 2026 (recovered from commit d2a391b)
-        };
-
-        // Actual 2026 line: historical snapshots in the past, current totalSales now, null in the future.
-        // Past gaps between snapshots are linearly interpolated so a point marker lands on each tick.
+        // Actual 2026 line: derived directly from salesByDate + corporate booking dates so
+        // the curve reflects real daily sales (no more hand-typed snapshots / straight line).
+        function isoForWeeksOut(w) {
+            const d = new Date(eventDate);
+            d.setDate(d.getDate() - w * 7);
+            return d.toISOString().slice(0, 10);
+        }
+        function cumulativeSoldAt(anchorIso) {
+            let total = earlyBirdTotal;
+            for (const [d, count] of Object.entries(salesByDate)) {
+                if (d <= anchorIso) total += count;
+            }
+            // Corporate tickets show up on the chart from the date they were booked.
+            // Uses current onStartlist as a small approximation — we don't store historical match counts.
+            for (const c of corporateBookings) {
+                if (c.date && c.date <= anchorIso) {
+                    total += Math.max(0, c.tickets - c.onStartlist);
+                }
+            }
+            return total;
+        }
         const actual2026 = weekNumbers.map(w => {
             if (w === currentWeeksToEvent) return totalSales;
-            if (w > currentWeeksToEvent) return rtw2026Snapshots[w] ?? null;
-            return null;
+            if (w > currentWeeksToEvent) return cumulativeSoldAt(isoForWeeksOut(w));
+            return null;  // future
         });
-        for (let i = 0; i < actual2026.length; i++) {
-            if (actual2026[i] !== null) continue;
-            if (weekNumbers[i] < currentWeeksToEvent) continue;  // leave future as null
-            let L = i - 1, R = i + 1;
-            while (L >= 0 && actual2026[L] === null) L--;
-            while (R < actual2026.length && actual2026[R] === null) R++;
-            if (L < 0 || R >= actual2026.length) continue;
-            actual2026[i] = Math.round(actual2026[L] + (i - L) / (R - L) * (actual2026[R] - actual2026[L]));
-        }
 
         // Projected line: organic pace until 12 weeks out, then 2025's sales distribution.
         // 2025 sold 2,061 tickets from 12 weeks to event day:
@@ -1588,7 +1586,7 @@
         const projected2026 = weekNumbers.map(projectedAt);
 
         // Target pace (linear from initial state to 4,000 / 5,000 stretch)
-        const initialAtLaunch = rtw2026Snapshots[33] ?? earlyBirdTotal;
+        const initialAtLaunch = cumulativeSoldAt(isoForWeeksOut(33));
         const target2026 = weekNumbers.map(w =>
             Math.round(initialAtLaunch + (target - initialAtLaunch) * (33 - w) / 33)
         );
