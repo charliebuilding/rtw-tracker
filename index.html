@@ -887,7 +887,7 @@
                 <div class="legend-item"><div class="legend-dot cyan"></div> RTW 2026 Actual (33 wks lead)</div>
                 <div class="legend-item"><div class="legend-dot" style="background: #9966ff;"></div> RTW 2025 Actual (15 wks lead)</div>
                 <div class="legend-item"><div class="legend-dot yellow"></div> Target Pace (4,000)</div>
-                <div class="legend-item"><div class="legend-dot pink"></div> RTW 2026 Projected</div>
+                <div class="legend-item"><div class="legend-dot pink"></div> RTW 2026 Projected (Recent Pace)</div>
             </div>
             <p style="text-align: center; color: var(--text-muted); font-size: 0.75rem; margin-top: 0.75rem;" id="statChartNote">
                 —
@@ -1597,27 +1597,23 @@
             return null;  // future
         });
 
-        // Projected line: organic pace until 12 weeks out, then 2025's sales distribution.
-        // 2025 sold 2,061 tickets from 12 weeks to event day:
-        //   12→8 wks: 654 (31.7%), 8→4 wks: 892 (43.3%), 4→0 wks: 515 (25.0%)
-        const daysUntil12Weeks = Math.max(0, daysToEvent - 84);
-        const baseAt12 = totalSales + organicDailyPace * daysUntil12Weeks;
-        const remainingFrom12 = organicDailyPace * 84;  // organic-pace baseline for last 12 wks
-
+        // Projected line: total still-to-sell at RECENT pace, shaped by 2025's late-surge distribution.
+        // 2025 cumulative share of final-stretch sales by weeks-to-event:
+        //   12wk 0% → 8wk 31.7% → 4wk 75.0% → 0wk 100%
+        function surgeShare(w) {
+            if (w >= 12) return 0;
+            if (w >= 8)  return 0.317 * (12 - w) / 4;            // 12→8
+            if (w >= 4)  return 0.317 + 0.433 * (8 - w) / 4;     // 8→4
+            return 0.317 + 0.433 + 0.250 * (4 - w) / 4;          // 4→0
+        }
+        const recentRemainingTotal = recentDailyPace * daysToEvent;   // tickets still to sell at recent pace
+        const nowShare = surgeShare(currentWeeksToEvent);
         function projectedAt(w) {
-            if (w > currentWeeksToEvent) return null;  // in the past
-            if (w === currentWeeksToEvent) return totalSales;
-            const daysFromNow = daysToEvent - w * 7;
-            if (w >= 12) {
-                // Linear organic pace until we reach 12 weeks out
-                return Math.round(totalSales + organicDailyPace * daysFromNow);
-            }
-            // Below 12 weeks: 2025's sales distribution applied to the organic baseline
-            let fraction = 0;
-            if (w >= 8)       fraction = 0.317 * (12 - w) / 4;
-            else if (w >= 4)  fraction = 0.317 + 0.433 * (8 - w) / 4;
-            else              fraction = 0.317 + 0.433 + 0.250 * (4 - w) / 4;
-            return Math.round(baseAt12 + remainingFrom12 * fraction);
+            if (w > currentWeeksToEvent) return null;             // past
+            if (w === currentWeeksToEvent) return totalSales;     // anchor at today
+            if (nowShare >= 1) return totalSales;                 // guard (event week)
+            const frac = (surgeShare(w) - nowShare) / (1 - nowShare);
+            return Math.round(totalSales + recentRemainingTotal * frac);
         }
         const projected2026 = weekNumbers.map(projectedAt);
 
@@ -1676,7 +1672,7 @@
                         pointHoverRadius: 4
                     },
                     {
-                        label: 'RTW 2026 Projected (Organic)',
+                        label: 'RTW 2026 Projected (Recent Pace)',
                         data: projected2026,
                         borderColor: '#ff006b',
                         backgroundColor: 'transparent',
