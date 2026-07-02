@@ -918,12 +918,20 @@
                         <div class="run-rate-item-label">Organic Pace (excl. spikes)</div>
                     </div>
                     <div class="run-rate-item">
+                        <div class="run-rate-item-value" id="statRecentPace" style="color: var(--accent-yellow);">—</div>
+                        <div class="run-rate-item-label">Recent Pace (14-day)</div>
+                    </div>
+                    <div class="run-rate-item">
                         <div class="run-rate-item-value" id="statWeeklyTarget">—</div>
                         <div class="run-rate-item-label">Weekly Target</div>
                     </div>
                     <div class="run-rate-item">
                         <div class="run-rate-item-value" id="statProjectedFinal" style="color: #4ade80;">—</div>
                         <div class="run-rate-item-label">Projected (Organic Pace)</div>
+                    </div>
+                    <div class="run-rate-item">
+                        <div class="run-rate-item-value" id="statProjectedRecent">—</div>
+                        <div class="run-rate-item-label">Projected (Recent Pace)</div>
                     </div>
                 </div>
             </div>
@@ -1363,7 +1371,22 @@
         const organicSales = postLaunchSales - spikeSales + corpUnallocated;
         const organicDays = daysSinceLaunch - allSpikeDates.filter(d => salesByDate[d]).length;
         const organicDailyPace = organicSales / organicDays;
-        
+
+        // Recent pace (rolling window) — reflects CURRENT momentum vs the lifetime organic average.
+        const RECENT_WINDOW_DAYS = 14;
+        let recentSales = 0;
+        for (const [d, count] of Object.entries(salesByDate)) {
+            const ageDays = (today - new Date(d)) / 86400000;
+            if (ageDays >= 0 && ageDays < RECENT_WINDOW_DAYS) recentSales += count;
+        }
+        for (const c of corporateBookings) {
+            if (!c.date) continue;
+            const ageDays = (today - new Date(c.date)) / 86400000;
+            if (ageDays >= 0 && ageDays < RECENT_WINDOW_DAYS) recentSales += Math.max(0, c.tickets - c.onStartlist);
+        }
+        const recentDailyPace = recentSales / RECENT_WINDOW_DAYS;
+        const projectedFinalRecent = Math.round(totalSales + recentDailyPace * daysToEvent);
+
         // Required pace
         const requiredDailyRate = ticketsRemaining / daysToEvent;
         const weeklyRequired = Math.ceil(requiredDailyRate * 7);
@@ -1425,6 +1448,9 @@
         document.getElementById('statWeeklyTarget').textContent = fmt(weeklyRequired);
         document.getElementById('statProjectedFinal').textContent = fmt(projectedFinal);
         document.getElementById('statProjectedFinal').style.color = projectedFinal >= target ? '#4ade80' : '#ff006b';
+        document.getElementById('statRecentPace').textContent = recentDailyPace.toFixed(1);
+        document.getElementById('statProjectedRecent').textContent = fmt(projectedFinalRecent);
+        document.getElementById('statProjectedRecent').style.color = projectedFinalRecent >= target ? '#4ade80' : '#ff006b';
         
         // Revenue
         document.getElementById('revRunRate').textContent = fmtCurrency(revRequiredDaily);
